@@ -1,0 +1,10 @@
+table tr th{
+    background: #222;
+
+}
+table tr td:nth-child(1){
+    background: #222;
+}
+table tr td{
+    background: #eee;
+}
