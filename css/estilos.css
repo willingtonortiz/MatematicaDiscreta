@@ -1,10 +1,17 @@
 table tr th{
     background: #222;
-
+    padding: 10px;
+    color: white;
+}
+table {
+    width: 100%;
 }
 table tr td:nth-child(1){
     background: #222;
+    color: white;
+    padding: 10px;
 }
 table tr td{
+    
     background: #eee;
 }

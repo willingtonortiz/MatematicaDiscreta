@@ -1,12 +1,13 @@
 var body = document.getElementById('body');
 var TieneTabla = false;
-document.getElementById('Generar').addEventListener('click', e => {
+document.getElementById('Generar').addEventListener('click',e=>{
 
     
     if (TieneTabla) {
         document.getElementById('tabla').remove();
         TieneTabla=false;
     }
+    e.target.setAttribute('disabled','disabled');
 
     if(!TieneTabla){
         TieneTabla=true;
