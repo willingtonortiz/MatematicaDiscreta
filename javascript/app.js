@@ -119,8 +119,6 @@ document.getElementById('Generar').addEventListener('click', e => {
                     console.log('indice fila: ' + j);
                     break;   
                 }
-            }
-        }
         // Recorrer por filas
         for (let j = 0; j < columnas; ++j) {
             for (let i = 0; i < filas; ++i) {
