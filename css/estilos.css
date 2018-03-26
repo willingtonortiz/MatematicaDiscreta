@@ -1,17 +1,41 @@
-table tr th{
-    background: #222;
-    padding: 10px;
-    color: white;
+*{
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
+
+body{
+    background-color: #323232;
+    font-size: 18px;
+}
+
+/* ===== Estilos de formaulario ===== */
+
+label{
+    color: #eee;
+}
+
+/* ===== Estilos de tabla ===== */
+
 table {
+    border-collapse: collapse;
     width: 100%;
+    text-align: center;
 }
-table tr td:nth-child(1){
-    background: #222;
-    color: white;
-    padding: 10px;
+
+table, tr, th, td{
+    border: 2px solid #eee;
 }
-table tr td{
-    
+
+table tr th, table tr td:nth-child(1){
     background: #eee;
+    padding: 1em 0;
+    color: #323232;
+}
+
+table tr td{    
+    background: #323232;
+    color: #eee;
 }
