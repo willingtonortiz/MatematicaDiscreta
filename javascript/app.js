@@ -3,10 +3,10 @@ var TieneTabla = false;
 
 document.getElementById('Generar').addEventListener('click', e => {
     if (TieneTabla) {
-        document.getElementById('tabla').remove();
+        document.getElementById('miTabla').remove();
         TieneTabla = false;
     }
-    e.target.setAttribute('disabled', 'disabled');
+    // e.target.setAttribute('disabled', 'disabled');
 
     if (!TieneTabla) {
         TieneTabla = true;
@@ -119,6 +119,8 @@ document.getElementById('Generar').addEventListener('click', e => {
                     console.log('indice fila: ' + j);
                     break;   
                 }
+            }
+        }
         // Recorrer por filas
         for (let j = 0; j < columnas; ++j) {
             for (let i = 0; i < filas; ++i) {
@@ -131,6 +133,7 @@ document.getElementById('Generar').addEventListener('click', e => {
         // ----fin: ENCONTRAR RESPUESTA
         /* ===== fin: ENCONTRAR EQUILIBRIO DE NASH EN ESTRATEGIA PURA ===== */
 
-        
     }
 })
+
+
