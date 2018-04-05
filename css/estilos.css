@@ -51,13 +51,13 @@ table tr td{
 
 
 .zelda-input{
-
+    width: 75%;
     background: rgba(255,255,255,.1);
     border: none;
     color: white;
     padding: 10px;
     transition: all .2s ease-in-out;
-   
+    text-align: center;
 }
 
 .input-data{
