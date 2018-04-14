@@ -1,21 +1,23 @@
-*{
-	margin: 0;
-	padding: 0;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-body{
+body {
     background-color: #112;
     font-size: 18px;
 }
 
 /* ===== Estilos de formaulario ===== */
+
 button {
     margin: 0 10px;
 }
-label{
+
+label {
     color: #eee;
 }
 
@@ -27,32 +29,34 @@ table {
     text-align: center;
 }
 
-table, tr, th, td{
+table,
+tr,
+th,
+td {
     /* border: 2px solid #eee; */
 }
 
-table tr th, table tr td:nth-child(1){
+table tr th,
+table tr td:nth-child(1) {
     background: #eee;
     padding: 1em 0;
     color: #323232;
 }
 
-table tr th{
+table tr th {
     background: #eee;
     color: #222;
-
 }
 
-table tr td{    
+table tr td {
     background: #323232;
     color: #eee;
     transition: all .3s ease-in-out;
 }
 
-
-.zelda-input{
+.zelda-input {
     width: 75%;
-    background: rgba(255,255,255,.1);
+    background: rgba(255, 255, 255, .1);
     border: none;
     color: white;
     padding: 10px;
@@ -60,31 +64,46 @@ table tr td{
     text-align: center;
 }
 
-.input-data{
-    background: rgba(255,255,255,.1);
+.input-data {
+    background: rgba(255, 255, 255, .1);
     border: none;
     color: white;
     padding: 10px;
     transition: all .2s ease-in-out;
 }
-.input-data:focus{
+
+.input-data:focus {
     outline: none;
-    border-left: 5px solid  #3fa;    
+    border-left: 5px solid #3fa;
 }
-.input{
+
+.input {
     margin: 10px;
 }
-#Generar{
+
+#Generar {
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
-    background: linear-gradient(45deg,rgba(25,125,255,1),rgba(25,225,125,1));
+    background: linear-gradient(45deg, rgba(25, 125, 255, 1), rgba(25, 225, 125, 1));
     color: white;
     margin: 10px;
     transition: all .2s ease-in-out;
     cursor: pointer;
 }
-#Generar:active
-{
+
+#Generar:active {
     transform: scale(.96);
+}
+
+#respuestas {
+    padding: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+#respuestas p{
+    color: #fff;
+    font-size: 40px;
 }

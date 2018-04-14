@@ -1,22 +1,15 @@
 var body = document.getElementById('body');
 var TieneTabla = false;
 
-// class CTabla{
-//     constructor(filas, columnas){
-//         this.filas = filas;
-//         this.columans = columnas;
-//     }
-//     crearTabla(){
-
-//     }
-            
-// }
-
 // Clase para cada elemento random
-class CElemento{
-    constructor(x, y){
+class CElemento {
+    constructor(x, y) {
         this.x = x || Math.floor(Math.random() * 11);
         this.y = y || Math.floor(Math.random() * 11);
+        if (x == 0) this.x = 0;
+        if (y == 0) this.y = 0;
+        this.rptaX = false;
+        this.rptaY = false;
     }
 }
 
@@ -30,66 +23,52 @@ function crearTabla(table, filas, columnas) {
                 var th = document.createElement('th');
                 tr.appendChild(th);
                 if (j != 0) {
-                    th.textContent = "Opcion " + j;
+                    th.textContent = "B" + j;
                 }
-            }
-            else {
+            } else {
                 var td = document.createElement('td');
                 tr.appendChild(td)
                 if (j == 0) {
-                    td.textContent = "Opcion " + i;
-                }
-                else{
-                    var inputZelda  =document.createElement('input');
-                    inputZelda.setAttribute('id','td-' + i + '-' + j);
-                    inputZelda.setAttribute('class','zelda-input');
-                    inputZelda.setAttribute('placeholder','Ingrese los valores');
-                    inputZelda.setAttribute('type','text');
+                    td.textContent = "A" + i;
+                } else {
+                    var inputZelda = document.createElement('input');
+                    inputZelda.setAttribute('id', 'td-' + i + '-' + j);
+                    inputZelda.setAttribute('class', 'zelda-input');
+                    inputZelda.setAttribute('type', 'text');
                     td.appendChild(inputZelda);
                 }
             }
         }
-    }      
-}
-
-// Función para borrar los input, función obsoleta
-function borrarInputs(){
-    var inputsZeldas =  document.getElementsByClassName('zelda-input');
-    for(var i = 0; i < inputsZeldas.length; i++)
-    {
-        inputsZeldas[i].remove();
     }
 }
 
 // Función llenar los imputs con número random
-function inputsRandom(elementos){
-    var inputsZeldas =  document.getElementsByClassName('zelda-input');
-    for(var i = 0; i < inputsZeldas.length; i++)
-    {
-        inputsZeldas[i].value = elementos[Math.floor(i / elementos[0].length)][i % elementos.length].x + ", " + elementos[Math.floor(i / elementos[0].length)][i % elementos.length].y;        
+function inputsRandom(elementos) {
+    var inputsZeldas = document.getElementsByClassName('zelda-input');
+    for (var i = 0; i < inputsZeldas.length; i++) {
+        inputsZeldas[i].value = elementos[Math.floor(i / elementos[0].length)][i % elementos.length].x + ", " + elementos[Math.floor(i / elementos[0].length)][i % elementos.length].y;
     }
 }
 
 // Función para generar elementos aleatorios
-function generarRandoms(filas, columnas){
+function generarRandoms(filas, columnas) {
     // Se crea una matriz con los datos
     // Primero se crea el arreglo de columnas
-    var elementos = new Array(filas);
+    var elementos = [];
     for (let i = 0; i < filas; ++i) {
         // Luego se crea el arreglo para cada columna
-        elementos[i] = new Array(columnas);
+        elementos[i] = [];
 
         // Después se generan los x e y random
         for (let j = 0; j < columnas; ++j) {
             elementos[i][j] = new CElemento();
-            // console.log("elemento[" + i + "][" + j + "] = " + elemento.x + ", " + elemento.y);
         }
     }
     return elementos;
 }
 
 // Función para llenar la tabla con los elementos otorgados
-function llenarTabla(elementos, filas, columnas){
+function llenarTabla(elementos, filas, columnas) {
     // Obtener una referencia a la tabla
     var miTabla = document.getElementById('miTabla');
     // Obtener todas las filas de la tabla
@@ -107,6 +86,22 @@ function llenarTabla(elementos, filas, columnas){
     }
 }
 
+// Función para leer la tabla y generar una matriz de ella
+function obtenerTabla(tabla) {
+    let filas = tabla.getElementsByTagName("tr");
+    var elementos = [];
+    for (let i = 1; i < filas.length; i++) {
+        let columnas = filas[i].getElementsByTagName("td");
+        elementos.push([]);
+        for (let j = 1; j < columnas.length; j++) {
+            let valor = columnas[j].getElementsByTagName("input")[0].value;
+            valor = valor.split(",");
+            elementos[i - 1].push(new CElemento(parseInt(valor[0]), parseInt(valor[1])));
+        }
+    }
+    return elementos;
+}
+
 document.getElementById('Generar').addEventListener('click', e => {
     if (TieneTabla) {
         document.getElementById('miTabla').remove();
@@ -114,41 +109,42 @@ document.getElementById('Generar').addEventListener('click', e => {
         document.getElementById('btn-Nash').remove();
         TieneTabla = false;
     }
-    // e.target.setAttribute('disabled', 'disabled');
 
     if (!TieneTabla) {
         TieneTabla = true;
         // Declaración y definición de variables
+        let contenedor = document.getElementById("tablas");
+        let respuestas = document.getElementById("respuestas");
         var filas = parseInt(document.getElementById('filas').value);
         var columnas = parseInt(document.getElementById('columnas').value);
-        // Se crea la tabla de contenidos
+
+        // Se crea la tabla de contenidos y los botones
         var table = document.createElement('table');
         var buttonRandom = document.createElement('button');
-        var buttonNash =  document.createElement('button');
+        var buttonNash = document.createElement('button');
 
-        buttonRandom.setAttribute('id','btn-random');
+        // Se genera el boton para valores random
+        buttonRandom.setAttribute('id', 'btn-random');
         buttonRandom.textContent = "Generar valores Random";
-        body.appendChild(buttonRandom);
+        contenedor.appendChild(buttonRandom);
 
-        buttonNash.setAttribute('id','btn-Nash');
-        buttonNash.textContent ="INVOCO A NASH!!";
-        body.appendChild(buttonNash);
+        // Se genera el boton para valores random
+        buttonNash.setAttribute('id', 'btn-Nash');
+        buttonNash.textContent = "Resolver";
+        contenedor.appendChild(buttonNash);
 
-        // Se le agrega a la tabla un ID
+        // Se gerera la tabla
         table.setAttribute('id', 'miTabla');
-
-        // Se agrega la tabla al body
-        body.appendChild(table);
-
+        contenedor.appendChild(table);
         // Se crea la tabla
         crearTabla(table, filas, columnas);
 
-        // console.log('filas: ' + filas);
-        // console.log('columnas: ' + columnas);
+        // Se genera el contenedor para las respuestas
+        respuestas.setAttribute('id', 'respuestas');
+        respuestas.appendChild(document.createElement("p"));
 
         buttonRandom.addEventListener('click', e => {
             /* ===== inicio: GENERADOR DE ELEMENTOS ALEATORIOS ===== */
-            // borrarInputs();
             var elementos = generarRandoms(filas, columnas);
             /* ===== fin: GENERADOR DE ELEMENTOS ALEATORIOS ===== */
 
@@ -209,7 +205,53 @@ document.getElementById('Generar').addEventListener('click', e => {
             // ----fin: ENCONTRAR RESPUESTA
             /* ===== fin: ENCONTRAR EQUILIBRIO DE NASH EN ESTRATEGIA PURA ===== */
         })
+        buttonNash.addEventListener('click', () => {
+            // Primero, extraemos los valores de los imput;
+            // ObtenerTabla devolverá una matriz cuadrada hecha conformada por CElemento;
+            let elementos = obtenerTabla(table);
+
+            // Buscamos el mayor valor por filas de "B", es decir, el mayor "y" de cada fila
+            // Y su propiedad "seleccionado" la cambiamos por true.
+            for (let i = 0; i < elementos.length; i++) {
+                let mayor = 0;
+                for (let j = 0; j < elementos[i].length; j++) {
+                    mayor = Math.max(mayor, elementos[i][j].y);
+                }
+                for (let j = 0; j < elementos[i].length; j++) {
+                    if (mayor == elementos[i][j].y)
+                        elementos[i][j].rptaY = true;
+                }
+            }
+
+            // Buscamos el mayor valor por columnas de "A", es decir, el mayor "x" de cada columna
+            // Y su propiedad "seleccionado" la cambiamos por true.
+            for (let i = 0; i < elementos.length; i++) {
+                let mayor = 0;
+                for (let j = 0; j < elementos[i].length; j++) {
+                    mayor = Math.max(mayor, elementos[j][i].x);
+                }
+                for (let j = 0; j < elementos[i].length; j++) {
+                    if (mayor == elementos[j][i].x)
+                        elementos[j][i].rptaX = true;
+                }
+            }
+
+            // Mostramos la respuesta si existe
+            // Una respuesta existe si y solo si los elementos "X" e "Y" son los mayores en cada fila y columna a la vez
+
+            let solucion = "ENEP = {";
+            for (let i = 0; i < elementos.length; i++) {
+                for (let j = 0; j < elementos.length; j++) {
+                    if (elementos[i][j].rptaX == true && elementos[i][j].rptaY == true)
+                        solucion += "(A" + (i + 1) + ", B" + (j + 1) + "), ";
+                }
+            }
+            solucion = solucion.slice(0, -2);
+            solucion += "}";
+            if (solucion !== "ENEP =}")
+                respuestas.firstElementChild.innerText = solucion;
+            else
+                respuestas.firstElementChild.innerText = "No hay respuesta en estrategias puras";
+        });
     }
 })
-
-
