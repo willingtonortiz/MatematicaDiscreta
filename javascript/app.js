@@ -1,5 +1,15 @@
 var body = document.getElementById('body');
 var TieneTabla = false;
+var deleteTarget = false;
+// Funcion para que cada vez que recargue la pagina los valores de los inputs desaparezcan
+function reloadValueInput(){
+    document.getElementById('filas').value = "";
+    document.getElementById('columnas').value = "";
+}
+// Llamada al evento ReloadValueInput();
+reloadValueInput();
+
+
 
 // Clase para cada elemento random
 class CElemento {
@@ -47,8 +57,38 @@ function inputsRandom(elementos) {
     var inputsZeldas = document.getElementsByClassName('zelda-input');
     for (var i = 0; i < inputsZeldas.length; i++) {
         inputsZeldas[i].value = elementos[Math.floor(i / elementos[0].length)][i % elementos.length].x + ", " + elementos[Math.floor(i / elementos[0].length)][i % elementos.length].y;
+        
     }
 }
+
+
+
+
+function getPositionOfINputs(index){
+    var targetInput = document.getElementsByClassName('zelda-input');
+    
+    console.log('X: '+targetInput[index].offsetLeft);
+    console.log('Y: '+targetInput[index].offsetTop);
+    var body  = document.getElementById('body');
+    var divFather = document.createElement('div');
+    divFather.setAttribute('id','divFather');
+    divFather.style.top = targetInput[index].offsetTop +"px";
+    divFather.style.left = targetInput[index].offsetLeft +"px";
+    divFather.style.position = "absolute";
+    divFather.style.width ="30px";
+    divFather.style.height= "30px";
+
+    var div =  document.createElement('div');    
+    div.setAttribute('class','target');
+    div.style.width ="30px";
+    div.style.height= "30px";
+    div.style.background ="rgba(255,25,25,.3)";
+    
+    divFather.appendChild(div);
+    body.appendChild(divFather);
+}
+
+
 
 // Función para generar elementos aleatorios
 function generarRandoms(filas, columnas) {
@@ -106,7 +146,9 @@ document.getElementById('Generar').addEventListener('click', e => {
     if (TieneTabla) {
         document.getElementById('miTabla').remove();
         document.getElementById('btn-random').remove();
-        document.getElementById('btn-Nash').remove();
+        document.getElementById('btn-Nash-Pura').remove();
+        document.getElementById('btn-Nash-Mixta').remove();
+        // document.getElementById('divFather').remove();
         TieneTabla = false;
     }
 
@@ -121,17 +163,24 @@ document.getElementById('Generar').addEventListener('click', e => {
         // Se crea la tabla de contenidos y los botones
         var table = document.createElement('table');
         var buttonRandom = document.createElement('button');
-        var buttonNash = document.createElement('button');
+        var buttonNashPura = document.createElement('button');
+        var buttonNashMixta = document.createElement('button');
 
         // Se genera el boton para valores random
         buttonRandom.setAttribute('id', 'btn-random');
         buttonRandom.textContent = "Generar valores Random";
         contenedor.appendChild(buttonRandom);
 
-        // Se genera el boton para valores random
-        buttonNash.setAttribute('id', 'btn-Nash');
-        buttonNash.textContent = "Resolver";
-        contenedor.appendChild(buttonNash);
+        // Se genera el boton para hacer las estrategias Puras
+        buttonNashPura.setAttribute('id', 'btn-Nash-Pura');
+        buttonNashPura.textContent = "Estrategias Puras";
+        contenedor.appendChild(buttonNashPura);
+
+        // Se genera el boton para hacer las estrategias mixtas
+
+        buttonNashMixta.setAttribute('id', 'btn-Nash-Mixta');
+        buttonNashMixta.textContent = 'Estrategia Mixta';
+        contenedor.appendChild(buttonNashMixta);
 
         // Se gerera la tabla
         table.setAttribute('id', 'miTabla');
@@ -144,6 +193,8 @@ document.getElementById('Generar').addEventListener('click', e => {
         respuestas.appendChild(document.createElement("p"));
 
         buttonRandom.addEventListener('click', e => {
+           
+
             /* ===== inicio: GENERADOR DE ELEMENTOS ALEATORIOS ===== */
             var elementos = generarRandoms(filas, columnas);
             /* ===== fin: GENERADOR DE ELEMENTOS ALEATORIOS ===== */
@@ -153,7 +204,7 @@ document.getElementById('Generar').addEventListener('click', e => {
             /* ===== fin: llenar la tabla ===== */
 
             inputsRandom(elementos);
-
+            
             /* ===== inicio: ENCONTRAR EQUILIBRIO DE NASH EN ESTRATEGIA PURA ===== */
             var mayoresFila = [];
             var mayoresColumna = [];
@@ -170,7 +221,8 @@ document.getElementById('Generar').addEventListener('click', e => {
                 }
                 mayoresFila.push(mayorFila);
             }
-            console.log('filas: ' + mayoresFila);
+             console.log('filas: ' + mayoresFila);
+  
             // Recorrer por filas
             for (let j = 0; j < columnas; ++j) {
                 for (let i = 0; i < filas; ++i) {
@@ -181,14 +233,14 @@ document.getElementById('Generar').addEventListener('click', e => {
                 }
                 mayoresColumna.push(mayorColumna);
             }
-            console.log('columnas: ' + mayoresColumna);
+            // console.log('columnas: ' + mayoresColumna);
             // ----fin: SUBRAYAR
             // ----inicio: ENCONTRAR RESPUESTA
             // Recorrer por columnas
             for (let i = 0; i < filas; ++i) {
                 for (let j = 0; j < columnas; ++j) {
                     if (elementos[i][j].y == mayoresFila[i]) {
-                        console.log('indice fila: ' + j);
+                        // console.log('indice fila: ' + j);
                         break;
                     }
                 }
@@ -197,7 +249,7 @@ document.getElementById('Generar').addEventListener('click', e => {
             for (let j = 0; j < columnas; ++j) {
                 for (let i = 0; i < filas; ++i) {
                     if (elementos[i][j].x == mayoresColumna[j]) {
-                        console.log('indice columna: ' + i);
+                        // console.log('indice columna: ' + i);
                         break;
                     }
                 }
@@ -205,17 +257,27 @@ document.getElementById('Generar').addEventListener('click', e => {
             // ----fin: ENCONTRAR RESPUESTA
             /* ===== fin: ENCONTRAR EQUILIBRIO DE NASH EN ESTRATEGIA PURA ===== */
         })
-        buttonNash.addEventListener('click', () => {
+        // Llamada de evento Estrategia Pura
+        buttonNashPura.addEventListener('click', () => {
+
             // Primero, extraemos los valores de los imput;
             // ObtenerTabla devolverá una matriz cuadrada hecha conformada por CElemento;
             let elementos = obtenerTabla(table);
-
+            
+            
+            //
+            if(deleteTarget){
+                document.getElementById('divFather').remove();
+                deleteTarget = false;
+            }
+            
             // Buscamos el mayor valor por filas de "B", es decir, el mayor "y" de cada fila
             // Y su propiedad "seleccionado" la cambiamos por true.
             for (let i = 0; i < elementos.length; i++) {
                 let mayor = 0;
                 for (let j = 0; j < elementos[i].length; j++) {
                     mayor = Math.max(mayor, elementos[i][j].y);
+                 
                 }
                 for (let j = 0; j < elementos[i].length; j++) {
                     if (mayor == elementos[i][j].y)
@@ -231,7 +293,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                     mayor = Math.max(mayor, elementos[j][i].x);
                 }
                 for (let j = 0; j < elementos[i].length; j++) {
-                    if (mayor == elementos[j][i].x)
+                    if (mayor == elementos[j][i].x)                                                                                                                         
                         elementos[j][i].rptaX = true;
                 }
             }
@@ -242,8 +304,14 @@ document.getElementById('Generar').addEventListener('click', e => {
             let solucion = "ENEP = {";
             for (let i = 0; i < elementos.length; i++) {
                 for (let j = 0; j < elementos.length; j++) {
-                    if (elementos[i][j].rptaX == true && elementos[i][j].rptaY == true)
+                    if (elementos[i][j].rptaX == true && elementos[i][j].rptaY == true && !deleteTarget)
+                    {
+                       
+                            getPositionOfINputs(i);
+                            deleteTarget = true;
+                      
                         solucion += "(A" + (i + 1) + ", B" + (j + 1) + "), ";
+                    }
                 }
             }
             solucion = solucion.slice(0, -2);
@@ -253,5 +321,7 @@ document.getElementById('Generar').addEventListener('click', e => {
             else
                 respuestas.firstElementChild.innerText = "No hay respuesta en estrategias puras";
         });
+
+        
     }
 })
