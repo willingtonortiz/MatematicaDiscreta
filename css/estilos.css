@@ -29,12 +29,6 @@ table {
     text-align: center;
 }
 
-table,
-tr,
-th,
-td {
-    /* border: 2px solid #eee; */
-}
 
 table tr th,
 table tr td:nth-child(1) {
