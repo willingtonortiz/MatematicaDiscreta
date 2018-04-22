@@ -9,8 +9,6 @@ function reloadValueInput(){
 // Llamada al evento ReloadValueInput();
 reloadValueInput();
 
-
-
 // Clase para cada elemento random
 class CElemento {
     constructor(x, y) {
@@ -64,28 +62,36 @@ function inputsRandom(elementos) {
 
 
 
-function getPositionOfINputs(index){
+function getPositionOfINputs(x){
+    // Definicion de los inputs
     var targetInput = document.getElementsByClassName('zelda-input');
     
-    console.log('X: '+targetInput[index].offsetLeft);
-    console.log('Y: '+targetInput[index].offsetTop);
+    // Definicion Container
     var body  = document.getElementById('body');
     var divFather = document.createElement('div');
+
+    // Atributos al Div father
     divFather.setAttribute('id','divFather');
-    divFather.style.top = targetInput[index].offsetTop +"px";
-    divFather.style.left = targetInput[index].offsetLeft +"px";
     divFather.style.position = "absolute";
+    divFather.style.left = targetInput[x].offsetLeft +"px";
+    divFather.style.top = targetInput[x].offsetTop  +"px";
     divFather.style.width ="30px";
     divFather.style.height= "30px";
+    
 
+    // Atributos al cuadro rojo que aparecerá en el target de los pares ordenas que cumplan con la ESTRATEGIA PURA
     var div =  document.createElement('div');    
     div.setAttribute('class','target');
     div.style.width ="30px";
     div.style.height= "30px";
     div.style.background ="rgba(255,25,25,.3)";
     
+    // ESTO SE ENTIENDE
     divFather.appendChild(div);
     body.appendChild(divFather);
+    console.log('X: '+targetInput[x].offsetLeft);
+    console.log('Y: '+  targetInput[x].offsetTop);
+    
 }
 
 
@@ -119,7 +125,7 @@ function llenarTabla(elementos, filas, columnas) {
         var tablaColumnas = tablaFilas[i].getElementsByTagName('td');
         // Se inicializa en "1" porque la primera columna no se cuenta
         for (let j = 1; j < columnas + 1; j++) {
-            // console.log(elementos[i - 1][j - 1].x + ", " + elementos[i - 1][j - 1].y);
+             console.log(elementos[i - 1][j - 1].x + ", " + elementos[i - 1][j - 1].y);
             // Se agrega el contenido a cada una de las celdas
             tablaColumnas[j].textContent = elementos[i - 1][j - 1].x + ", " + elementos[i - 1][j - 1].y;
         }
@@ -205,6 +211,8 @@ document.getElementById('Generar').addEventListener('click', e => {
 
             inputsRandom(elementos);
             
+            
+
             /* ===== inicio: ENCONTRAR EQUILIBRIO DE NASH EN ESTRATEGIA PURA ===== */
             var mayoresFila = [];
             var mayoresColumna = [];
@@ -221,7 +229,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                 }
                 mayoresFila.push(mayorFila);
             }
-             console.log('filas: ' + mayoresFila);
+              console.log('filas: ' + mayoresFila);
   
             // Recorrer por filas
             for (let j = 0; j < columnas; ++j) {
@@ -233,14 +241,14 @@ document.getElementById('Generar').addEventListener('click', e => {
                 }
                 mayoresColumna.push(mayorColumna);
             }
-            // console.log('columnas: ' + mayoresColumna);
+             console.log('columnas: ' + mayoresColumna);
             // ----fin: SUBRAYAR
             // ----inicio: ENCONTRAR RESPUESTA
             // Recorrer por columnas
             for (let i = 0; i < filas; ++i) {
                 for (let j = 0; j < columnas; ++j) {
                     if (elementos[i][j].y == mayoresFila[i]) {
-                        // console.log('indice fila: ' + j);
+                         console.log('indice fila: ' + j);
                         break;
                     }
                 }
@@ -249,7 +257,7 @@ document.getElementById('Generar').addEventListener('click', e => {
             for (let j = 0; j < columnas; ++j) {
                 for (let i = 0; i < filas; ++i) {
                     if (elementos[i][j].x == mayoresColumna[j]) {
-                        // console.log('indice columna: ' + i);
+                        console.log('indice columna: ' + i);
                         break;
                     }
                 }
@@ -263,9 +271,10 @@ document.getElementById('Generar').addEventListener('click', e => {
             // Primero, extraemos los valores de los imput;
             // ObtenerTabla devolverá una matriz cuadrada hecha conformada por CElemento;
             let elementos = obtenerTabla(table);
+            var _x ;
+            var _y;
             
-            
-            //
+            //Borra el target 
             if(deleteTarget){
                 document.getElementById('divFather').remove();
                 deleteTarget = false;
@@ -277,11 +286,13 @@ document.getElementById('Generar').addEventListener('click', e => {
                 let mayor = 0;
                 for (let j = 0; j < elementos[i].length; j++) {
                     mayor = Math.max(mayor, elementos[i][j].y);
-                 
+                    
                 }
                 for (let j = 0; j < elementos[i].length; j++) {
                     if (mayor == elementos[i][j].y)
-                        elementos[i][j].rptaY = true;
+                    elementos[i][j].rptaY = true;
+                    x = i;
+                    
                 }
             }
 
@@ -295,25 +306,29 @@ document.getElementById('Generar').addEventListener('click', e => {
                 for (let j = 0; j < elementos[i].length; j++) {
                     if (mayor == elementos[j][i].x)                                                                                                                         
                         elementos[j][i].rptaX = true;
+                        y = i;
                 }
             }
-
             // Mostramos la respuesta si existe
             // Una respuesta existe si y solo si los elementos "X" e "Y" son los mayores en cada fila y columna a la vez
 
             let solucion = "ENEP = {";
             for (let i = 0; i < elementos.length; i++) {
-                for (let j = 0; j < elementos.length; j++) {
+                for (let j = 0; j < elementos.length; j++) {                               //Condicional para mostrar el target 
                     if (elementos[i][j].rptaX == true && elementos[i][j].rptaY == true && !deleteTarget)
-                    {
-                       
-                            getPositionOfINputs(i);
-                            deleteTarget = true;
-                      
+                    {                                 
+                        // algoritmo para hallar el indice del del arreglo               
+
+                        _x = i;
+                        _y = j;
+                        var total = _x*(elementos.length) + (_y+1);   
+                        getPositionOfINputs(total-1);
+                        deleteTarget = true;
                         solucion += "(A" + (i + 1) + ", B" + (j + 1) + "), ";
                     }
                 }
             }
+
             solucion = solucion.slice(0, -2);
             solucion += "}";
             if (solucion !== "ENEP =}")
