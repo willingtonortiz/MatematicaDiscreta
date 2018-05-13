@@ -2,6 +2,9 @@ var body = document.getElementById('body');
 var TieneTabla = false;
 var deleteTarget = false;
 var targetSize = 0;
+var arrElementoSeleccionados = [];
+var arrElementoNoSeleccionados =[];
+var firstCallBtnPura = false;
 // Funcion para que cada vez que recargue la pagina los valores de los inputs desaparezcan
 function reloadValueInput() {
     document.getElementById('filas').value = "";
@@ -66,36 +69,44 @@ function inputsRandom(elementos) {
 function getPositionOfINputs(x) {
     // Definicion de los inputs
     var targetInput = document.getElementsByClassName('zelda-input');
-    var a = 0;
-    // Definicion Container
-    var body = document.getElementById('body');
-    var divFather = document.createElement('div');
+    // Arreglo para almacenar los valores de x 
+    // Por ejemplo el inpuit numero 4 y 5 , asi entre otros valores
+    var auxArr = [];
+    // Vacenado Array
+    auxArr.length=0;
 
-    // Atributos al Div father
-    divFather.setAttribute('id', 'divFather'+a);
-    divFather.setAttribute('class','divFather');
-    divFather.style.position = "absolute";
-    divFather.style.left = targetInput[x].offsetLeft + "px";
-    divFather.style.top = targetInput[x].offsetTop + "px";
-    divFather.style.width = "30px";
-    divFather.style.height = "30px";
+    //Almacenando los valores x en el auxArr
+    for (var i = 0; i < targetInput.length; i++) {
+        if (i == x) {            
+            // console.log(x);
+            auxArr.push(x);
+        }
+    }
+    // Usando los variables del array para anexar al index de los inputs
+    // ---- y añadirle los colores
+    for( var j = 0; j<auxArr.length;j++){
+        // console.log('Los valores del auxArr: '+(auxArr[j] + 1));
+        targetInput[auxArr[j]].classList.add('selected');
+    }       
+    
 
-
-    // Atributos al cuadro rojo que aparecerá en el target de los pares ordenas que cumplan con la ESTRATEGIA PURA
-    var div = document.createElement('div');
-    div.setAttribute('class', 'target');
-    div.style.width = "30px";
-    div.style.height = "30px";
-    div.style.background = "rgba(255,25,25,.3)";
-
-    // ESTO SE ENTIENDE
-    divFather.appendChild(div);
-    body.appendChild(divFather);
-    // console.log('X: '+targetInput[x].offsetLeft);
-    // console.log('Y: '+  targetInput[x].offsetTop);
 
 }
-
+function unselectedInputs(elx){
+    var _unObjetiveInput = document.getElementsByClassName('zelda-input');
+    var auxArr_NoSeleccionados  = [];
+    //Vaceando Array
+    auxArr_NoSeleccionados.length  =0;
+    for( var i = 0; i<_unObjetiveInput.length;i++){
+        if(i == elx){
+            auxArr_NoSeleccionados.push(i);
+        }
+    }
+    for( var j = 0; j<auxArr_NoSeleccionados.length;j++){
+        // console.log('Los valores del auxArr_NoSeleccionados: '+ (auxArr_NoSeleccionados[j]+1));
+        _unObjetiveInput[auxArr_NoSeleccionados[j]].classList.add('unselected');
+    }
+}
 
 
 // Función para generar elementos aleatorios
@@ -153,9 +164,10 @@ function obtenerTabla(tabla) {
 document.getElementById('Generar').addEventListener('click', e => {
     if (TieneTabla) {
         document.getElementById('miTabla').remove();
-        document.getElementById('btn-random').remove();
-        document.getElementById('btn-Nash-Pura').remove();
-        document.getElementById('btn-Nash-Mixta').remove();
+        document.getElementById('btn-container').remove();
+        // document.getElementById('btn-random').remove();
+        // document.getElementById('btn-Nash-Pura').remove();
+        // document.getElementById('btn-Nash-Mixta').remove();
         // document.getElementById('divFather').remove();
         TieneTabla = false;
     }
@@ -170,31 +182,53 @@ document.getElementById('Generar').addEventListener('click', e => {
 
         // Se crea la tabla de contenidos y los botones
         var table = document.createElement('table');
+        var buttonContenedor = document.createElement('div');
         var buttonRandom = document.createElement('button');
         var buttonNashPura = document.createElement('button');
         var buttonNashMixta = document.createElement('button');
 
+        // Se genera el contenedor para los botones
+        buttonContenedor.setAttribute('id','btn-container');
+
         // Se genera el boton para valores random
         buttonRandom.setAttribute('id', 'btn-random');
         buttonRandom.textContent = "Generar valores Random";
-        contenedor.appendChild(buttonRandom);
+        buttonContenedor.appendChild(buttonRandom);
 
         // Se genera el boton para hacer las estrategias Puras
         buttonNashPura.setAttribute('id', 'btn-Nash-Pura');
         buttonNashPura.textContent = "Estrategias Puras";
-        contenedor.appendChild(buttonNashPura);
+        buttonContenedor.appendChild(buttonNashPura);
 
         // Se genera el boton para hacer las estrategias mixtas
 
         buttonNashMixta.setAttribute('id', 'btn-Nash-Mixta');
         buttonNashMixta.textContent = 'Estrategia Mixta';
-        contenedor.appendChild(buttonNashMixta);
+        buttonContenedor.appendChild(buttonNashMixta);
 
+        contenedor.appendChild(buttonContenedor);
         // Se gerera la tabla
         table.setAttribute('id', 'miTabla');
         contenedor.appendChild(table);
         // Se crea la tabla
         crearTabla(table, filas, columnas);
+
+        var xmZeldaInput = document.getElementsByClassName('zelda-input');
+        
+        // Quitar los estilos al momento de modificar algun input 
+        for(var q =0; q<xmZeldaInput.length;q++){
+            xmZeldaInput[q].addEventListener('keypress',e=>{
+                if(firstCallBtnPura){
+                    for( var i=0; i<arrElementoSeleccionados.length;i++){
+                        // console.log('Elementos Seleccionados anterior: '+  arrElementoSeleccionados[i]);
+                        xmZeldaInput[arrElementoSeleccionados[i]-1].classList.remove('selected');
+                    }
+                    for( var j=0; j<arrElementoNoSeleccionados.length;j++){
+                        xmZeldaInput[arrElementoNoSeleccionados[j] - 1].classList.remove('unselected');
+                    }
+                }
+            })
+        }
 
         // Se genera el contenedor para las respuestas
         respuestas.setAttribute('id', 'respuestas');
@@ -202,25 +236,27 @@ document.getElementById('Generar').addEventListener('click', e => {
 
         buttonRandom.addEventListener('click', e => {
 
-
             /* ===== inicio: GENERADOR DE ELEMENTOS ALEATORIOS ===== */
             var elementos = generarRandoms(filas, columnas);
+            var __ZeldaInputs = document.getElementsByClassName('zelda-input');
             /* ===== fin: GENERADOR DE ELEMENTOS ALEATORIOS ===== */
 
             /* ===== inicio: llenar la tabla ===== */
             // llenarTabla(elementos, filas, columnas);
             /* ===== fin: llenar la tabla ===== */
-
-            inputsRandom(elementos);
-
-            var _divFat = document.getElementsByClassName('divFather');
-            var divFatSize = _divFat.length;
-            // console.log('Fatsize ' + divFatSize);
-            for(var i =0; i<divFatSize;i++){
-
-                document.getElementById('divFather0').remove();
+            if(firstCallBtnPura){
+                console.log('Segunda vez que generas valores');
+                for( var i=0; i<arrElementoSeleccionados.length;i++){
+                        __ZeldaInputs[arrElementoSeleccionados[i]-1].classList.remove('selected');
+                }
+                for( var j=0; j<arrElementoNoSeleccionados.length;j++){
+                    __ZeldaInputs[arrElementoNoSeleccionados[j] - 1].classList.remove('unselected');
+                }
             }
-
+            inputsRandom(elementos);
+            
+            //Borrar los elementos seleccionados anteriormente
+  
 
             /* ===== inicio: ENCONTRAR EQUILIBRIO DE NASH EN ESTRATEGIA PURA ===== */
             var mayoresFila = [];
@@ -276,16 +312,16 @@ document.getElementById('Generar').addEventListener('click', e => {
         })
         // Llamada de evento Estrategia Pura
         buttonNashPura.addEventListener('click', () => {
-
+            firstCallBtnPura = true;
+            arrElementoSeleccionados.length = 0;
+            arrElementoNoSeleccionados.length = 0;
             // Primero, extraemos los valores de los imput;
             // ObtenerTabla devolverá una matriz cuadrada hecha conformada por CElemento;
             let elementos = obtenerTabla(table);
             var _x;
             var _y;
-            var divFat = document.getElementsByClassName('divFather');
-
             //Borra el target 
-
+            
 
             // Buscamos el mayor valor por filas de "B", es decir, el mayor "y" de cada fila
             // Y su propiedad "seleccionado" la cambiamos por true.
@@ -324,20 +360,34 @@ document.getElementById('Generar').addEventListener('click', e => {
                 for (let j = 0; j < elementos.length; j++) {                               //Condicional para mostrar el target 
                     if (elementos[i][j].rptaX == true && elementos[i][j].rptaY == true) {
                         // algoritmo para hallar el indice del del arreglo               
-
                         _x = i;
                         _y = j;
                         var total = _x * (elementos.length) + (_y + 1);
-                        getPositionOfINputs(total - 1);
-                        targetSize = divFat.length;
-
+                        // getPositionOfINputs(total - 1);
+                        arrElementoSeleccionados.push(total);
 
                         // deleteTarget = true;
                         solucion += "(A" + (i + 1) + ", B" + (j + 1) + "), ";
                     }
+                    else{
+                        _x = i;
+                        _y = j;
+                        total = _x * (elementos.length) + (_y+1);
+                        arrElementoNoSeleccionados.push(total);
+                    }
+
                 }
             }
-            console.log('TargetSize: ' + targetSize);
+            
+            for(var k =0; k<arrElementoSeleccionados.length;k++){
+                
+                getPositionOfINputs(arrElementoSeleccionados[k] - 1);
+            }
+
+            for( var j = 0; j<arrElementoNoSeleccionados.length;j++){
+                unselectedInputs(arrElementoNoSeleccionados[j] - 1);
+            }
+
 
             solucion = solucion.slice(0, -2);
             solucion += "}";
@@ -345,6 +395,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                 respuestas.firstElementChild.innerText = solucion;
             else
                 respuestas.firstElementChild.innerText = "No hay respuesta en estrategias puras";
+
         });
 
 
