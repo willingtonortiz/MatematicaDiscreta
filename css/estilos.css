@@ -1,9 +1,11 @@
+/* @import url('https://fonts.googleapis.com/css?family=Inconsolata'); */
 * {
     margin: 0;
     padding: 0;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    font-family: sans-serif;
 }
 
 body {
@@ -25,75 +27,134 @@ label {
 
 table {
     border-collapse: collapse;
-    width: 100%;
+    width: 85%;
+    
+    position: relative;
     text-align: center;
+    margin: 40px auto;
 }
 
-table,
-tr,
-th,
-td {
-    /* border: 2px solid #eee; */
-}
+
 
 table tr th,
 table tr td:nth-child(1) {
-    background: #eee;
-    padding: 1em 0;
-    color: #323232;
+    background: transparent;
+    padding: 1em;
+    /* color: #3d5; */
+    color: #ddd;
+    /* border: 1px solid  #3fa; */
+    text-align: center;
+    /* background: #222; */
 }
 
 table tr th {
-    background: #eee;
-    color: #222;
+    background: transparent;
+    /* border:  1px solid #3fa; */
 }
 
 table tr td {
-    background: #323232;
+    /* background: #323232; */
     color: #eee;
     transition: all .3s ease-in-out;
+    text-align: center;
+    padding: 1em;
+
 }
 
 .zelda-input {
-    width: 75%;
-    background: rgba(255, 255, 255, .1);
+    width: 100%;
+    margin: 0 auto;
+    background: rgba(105,105,105, .02);
     border: none;
     color: white;
     padding: 10px;
     transition: all .2s ease-in-out;
     text-align: center;
     position: relative;
+    border-radius: 5px;
+    
+}
+.selected{
+    transition: all .41s ease-in-out;
+    color: #3fa;
+    text-shadow: 0 0 5px #3fa;
+    background: rgba(205,205,205,.05);
+    
+    /* background: red; */
 }
 
+.unselected{
+    color: #555;
+    transition: all .41s ease-in-out;
+}
+.normal{
+    color: white;
+}
 .input-data {
-    background: rgba(255, 255, 255, .1);
+    background: rgba(255,255,255,.02);
+    border-radius: 5px;
     border: none;
     color: white;
     padding: 10px;
+    font-family: 'Inconsolata', monospace;
     transition: all .2s ease-in-out;
+    text-align: center;
+    
 }
 
 .input-data:focus {
     outline: none;
-    border-left: 5px solid #3fa;
+
+}
+.input-data:focus ~ .line{
+    width: 100%;
+    box-shadow: 0 0 1px #3fa;
+}
+.line{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: all .5s ease-in-out;
+    width: 0%;
+    height: 2px;
+    background: #3fa;
+}
+.form{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .input {
     margin: 10px;
+    width: auto;
+    height: 100%;
+    position: relative;
 }
 
 #Generar {
-    border: none;
+    /* border: none; */
     padding: 10px 20px;
     border-radius: 5px;
-    background: linear-gradient(45deg, rgba(25, 125, 255, 1), rgba(25, 225, 125, 1));
-    color: white;
+    /* background: linear-gradient(45deg, rgba(25, 125, 255, 1), rgba(25, 225, 125, 1)); */
+    color: #3fa;
+    background: transparent;
+    border: 1px solid #3fa;
     margin: 10px;
     transition: all .2s ease-in-out;
     cursor: pointer;
 }
+#btn-container{
+    margin: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-#Generar:active {
+button:active {
     transform: scale(.96);
 }
 
@@ -107,4 +168,30 @@ table tr td {
 #respuestas p{
     color: #fff;
     font-size: 40px;
+}
+
+#btn-random{
+    background: transparent;
+    border: 1px solid #eee;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #eee;
+    cursor: pointer;
+}
+
+#btn-Nash-Pura{
+    background: transparent;
+    border: 1px solid #fa3;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #fa3;
+    cursor: pointer;
+}
+#btn-Nash-Mixta{
+    background: transparent;
+    border: 1px solid #3d5;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #3d5;
+    cursor: pointer;
 }
