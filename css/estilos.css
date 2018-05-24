@@ -46,30 +46,24 @@ table {
 
 
 
-table tr th,
-table tr td:nth-child(1) {
+table tr:nth-child(1) th input{
     padding: 1em;
-    /* color: #3d5; */
     color: #34f;
-    /* border: 1px solid  #3fa; */
     text-align: center;
-    /* background: #222; */
 }
 
 table tr th {
     background: transparent;
-    /* border:  1px solid #3fa; */
 }
 
 table tr td {
-    /* background: #323232; */
     color: #eee;
     transition: all .3s ease-in-out;
     text-align: center;
     padding: 1em;
 
 }
-table tr td:nth-child(1){
+table tr td:nth-child(1) input{
     color: #f43;
 }
 table tr:nth-child(odd){
@@ -78,7 +72,7 @@ table tr:nth-child(odd){
 table tr:nth-child(even){
     background: rgba(155,155,155,.05);
 }
-.zelda-input {
+.zelda-input,.cabecera {
     width: 100%;
     margin: 0 auto;
     background: rgba(222,222,222, .01);
@@ -96,8 +90,6 @@ table tr:nth-child(even){
     color: #3fa;
     text-shadow: 0 0 5px #3fa;
     background:  rgba(155,155,155,.05);
-    
-    /* background: red; */
 }
 
 .unselected{

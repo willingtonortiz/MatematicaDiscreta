@@ -30,14 +30,14 @@ class CEstilos {
     // Quitar los estilos al momento de modificar algun input
     quitarLosEstilos() {
         let inputs = document.getElementsByClassName('zelda-input');
-        while(this.Seleccionados.length > 0){
+        while (this.Seleccionados.length > 0) {
             inputs[this.Seleccionados[0]].classList.remove('selected');
             this.Seleccionados.shift();
         }
-        while(this.NoSeleccionados.length > 0){
+        while (this.NoSeleccionados.length > 0) {
             inputs[this.NoSeleccionados[0]].classList.remove('unselected');
             this.NoSeleccionados.shift();
-        }      
+        }
     }
 }
 
@@ -59,25 +59,48 @@ function crearTabla(table, filas, columnas) {
                 var th = document.createElement('th');
                 tr.appendChild(th);
                 if (j != 0) {
-                    th.textContent = "B" + j;
+                    // SE CREA UN INPUT
+                    var inputZelda = crearInput('cabecera');
+                    inputZelda.value = "A" + j;
+                    th.appendChild(inputZelda);
+                    llenadoAutomatico(inputZelda, j, 'primero');
                 }
             }
             else {
                 var td = document.createElement('td');
                 tr.appendChild(td)
                 if (j == 0) {
-                    td.textContent = "A" + i;
+                    var inputZelda = crearInput('cabecera');
+                    inputZelda.value = "A" + i;
+                    llenadoAutomatico(inputZelda, i, 'segundo')
+                    td.appendChild(inputZelda);
                 } else {
                     // CREANDO CADA INPUT
-                    var inputZelda = document.createElement('input');
+                    var inputZelda = crearInput('zelda-input');
                     inputZelda.setAttribute('id', 'td-' + i + '-' + j);
-                    inputZelda.setAttribute('class', 'zelda-input');
-                    inputZelda.setAttribute('type', 'text');
                     td.appendChild(inputZelda);
                 }
             }
         }
     }
+}
+
+function llenadoAutomatico(input, indice, tipo) {
+    input.addEventListener('keyup', () => {
+        let elementos = document.getElementsByClassName('cabecera');
+        let cambiado;
+        if (tipo === 'primero') cambiado = elementos[indice - 1 + elementos.length / 2];
+        else cambiado = elementos[indice - 1];
+        cambiado.value = input.value;
+    });
+}
+
+// FUNCIÓN PARA CREAR UN INPUT CON LOS ATRIBUTOS SETEADOS
+function crearInput(tipo) {
+    var inputTemp = document.createElement('input');
+    inputTemp.setAttribute('type', 'text');
+    inputTemp.setAttribute('class', tipo);
+    return inputTemp;
 }
 
 // FUNCIÓN PARA LLENAR LOS INPUTS CON NÚMEROS RANDOM
@@ -195,7 +218,7 @@ document.getElementById('Generar').addEventListener('click', e => {
         buttonNashPura.addEventListener('click', () => {
             // QUITAR LOS ESTILOS A LA SOLUCIÓN ANTERIOR
             estilosInputs.quitarLosEstilos();
-            
+
             // ObtenerTabla devolverá una matriz conformada por CElemento;
             let elementos = obtenerTabla(table);
 
@@ -226,6 +249,9 @@ document.getElementById('Generar').addEventListener('click', e => {
 
             // Mostramos la respuesta si existe
             // Una respuesta existe si y solo si los elementos "X" e "Y" son los mayores en cada fila y columna a la vez
+
+            let nombresDesiciones = document.getElementsByClassName('cabecera');
+
             let solucion = "ENEP = {";
             for (let i = 0; i < elementos.length; i++) {
                 for (let j = 0; j < elementos[i].length; j++) {
@@ -234,8 +260,10 @@ document.getElementById('Generar').addEventListener('click', e => {
                         // MARCANDO LOS INPUTS QUE SON RESPUESTAS
                         estilosInputs.Seleccionados.push(i * elementos[i].length + j);
 
-                        // deleteTarget = true;
-                        solucion += "(A" + (i + 1) + ", B" + (j + 1) + "), ";
+                        // ESTA PARTE DEL CÓDIGO, LA SOLUCIÓN TIENE EN SUS COMPONENTES EL NOMBRE DE LAS DESICIONES
+                        solucion += "(" + nombresDesiciones[i + nombresDesiciones.length / 2].value + ", " + nombresDesiciones[j].value + "), ";
+                        // SOLUCIÓN ANTIGUA
+                        // solucion += "(A" + (i + 1) + ", B" + (j + 1) + "), ";
                     }
                     else {
                         // MARCANDO LOS INPUTS QUE NO SON RESPUESTAS
