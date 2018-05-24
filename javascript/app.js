@@ -50,7 +50,7 @@ document.getElementById('filas').value = "";
 document.getElementById('columnas').value = "";
 
 // FUNCIÓN PARA CREAR TABLAS
-function crearTabla(table, filas, columnas) {
+function crearTablaInputs(table, filas, columnas) {
     for (let i = 0; i < filas + 1; i++) {
         var tr = document.createElement('tr');
         table.appendChild(tr);
@@ -81,6 +81,49 @@ function crearTabla(table, filas, columnas) {
             }
         }
     }
+}
+
+// FUNCIÓN PARA OBTENER LOS NOMBRES DE LAS CABECERAS
+function obtenerNombresCabeceras(filas, columnas) {
+    let cabeceras = document.getElementsByClassName('cabecera');
+    let matriz = [];
+
+    matriz.push(new Array(columnas));
+    for (let i = 0; i < columnas; i++) {
+        matriz[0][i] = cabeceras[i].value;
+    }
+    matriz.push(new Array(filas));
+    for (let i = 0; i < filas; i++) {
+        matriz[1][i] = cabeceras[i + columnas].value;
+    }
+    return matriz;
+}
+
+// FUNCIÓN PARA CREAR TABLAS NORMALES
+function crearTabla(filas, columnas, elementos, nombres) {
+    let tabla = document.createElement('table');
+    for (let i = 0; i < filas + 1; i++) {
+        let fila = document.createElement('tr');
+        tabla.appendChild(fila);
+        for (let j = 0; j < columnas + 1; ++j) {
+            let celda = document.createElement('td');
+            celda.setAttribute('class', 'celda');
+            fila.appendChild(celda);
+            if (i == 0) {
+                if (j != 0) {
+                    celda.innerText = nombres[0][j - 1];
+                }
+            }
+            else {
+                if (j == 0) {
+                    celda.innerText = nombres[1][i - 1];
+                } else {
+                    celda.innerText = elementos[i - 1][j - 1].x + ", " + elementos[i - 1][j - 1].y;
+                }
+            }
+        }
+    }
+    return tabla;
 }
 
 //FUNCIÓN PARA IMPRIMIR MATRIZ EN CONSOLA
@@ -196,7 +239,7 @@ document.getElementById('Generar').addEventListener('click', e => {
         contenedor.appendChild(table);
 
         // SE CREA LA TABLA
-        crearTabla(table, filas, columnas);
+        crearTablaInputs(table, filas, columnas);
 
         // SI SE PRESIONA UN BOTÓN EN CUALQUIER INPUT, SE QUITAN LOS ESTILOS
         table.addEventListener('keypress', (e) => {
@@ -219,15 +262,20 @@ document.getElementById('Generar').addEventListener('click', e => {
             estilosInputs.quitarLosEstilos();
         });
 
-        // LLAMADA DE EVENTO ESTRATEGIA DOMINADA
+        /* ===== SOLUCIÓN EN ESTRATEGIAS DOMINADAS ===== */
         buttonDominadas.addEventListener('click', e => {
+            // SE OBTIENE EL CONTENEDOR EN DONDE SE COLOCARÁN LAS TABLAS SIMPLIFICADAS
+            let contenedorDominadas = document.getElementById('dominadas');
+            contenedorDominadas.innerHTML = "";
+
+            // SE OBTIENEN LOS NOMBRES DE LAS CABECERAS
+            let nombresCabeceras = obtenerNombresCabeceras(filas, columnas);
+
             //SE OBTIENEN LOS ELEMENTOS A PARTIR DE LA TABLA
             let elementos = obtenerTabla(table);
             let mayor, menor;
             let existeEliminacion;
             let turno = true;
-            console.log("COMIENZO");
-            imprimirMatriz(elementos);
             do {
                 existeEliminacion = false;
                 if (turno) {
@@ -249,7 +297,6 @@ document.getElementById('Generar').addEventListener('click', e => {
                                 existeEliminacion = true;
                                 if (mayor > menor) eliminados = j;
                                 else eliminados = i;
-                                // console.log(eliminados);
                                 break;
                             }
                         }
@@ -257,6 +304,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                     }
                     if (existeEliminacion) {
                         elementos.splice(eliminados, 1);
+                        nombresCabeceras[1].splice(eliminados, 1);
                     }
                 }
                 else {
@@ -287,18 +335,20 @@ document.getElementById('Generar').addEventListener('click', e => {
                         for (let i = 0; i < elementos.length; i++) {
                             elementos[i].splice(eliminados, 1);
                         }
+                        nombresCabeceras[0].splice(eliminados, 1);
                     }
                 }
-                if (existeEliminacion)
-                    imprimirMatriz(elementos);
-                // SE INVIERTE EL TURNO DEL JUGADOR
-                turno = !turno;
+                if (existeEliminacion) {
+                    // SE INVIERTE EL TURNO DEL JUGADOR
+                    turno = !turno;
+                    let tablaTemp = crearTabla(elementos.length, elementos[0].length, elementos, nombresCabeceras);
+                    contenedorDominadas.appendChild(tablaTemp);
+                }
             } while (existeEliminacion);
-            console.log("FINAL");
-            imprimirMatriz(elementos);
         });
+        /* ===== FIN ESTRATEGIAS PURAS ===== */
 
-        // LLAMADA DE EVENTO ESTRATEGIA PURA
+        /* ===== SOLUCIÓN EN ESTRATEGIAS PURAS ===== */
         buttonNashPura.addEventListener('click', () => {
             // QUITAR LOS ESTILOS A LA SOLUCIÓN ANTERIOR
             estilosInputs.quitarLosEstilos();
@@ -364,5 +414,6 @@ document.getElementById('Generar').addEventListener('click', e => {
             // MARCAR LAS RESPUESTAS DE CON COLORES NEÓN
             estilosInputs.marcarRespuestas();
         });
+        /* ===== FIN DE ESTRATEGIAS PURAS ===== */
     }
 })
