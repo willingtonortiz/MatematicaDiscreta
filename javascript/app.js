@@ -63,7 +63,6 @@ function crearTabla(table, filas, columnas) {
                     var inputZelda = crearInput('cabecera');
                     inputZelda.value = "A" + j;
                     th.appendChild(inputZelda);
-                    llenadoAutomatico(inputZelda, j, 'primero');
                 }
             }
             else {
@@ -72,7 +71,6 @@ function crearTabla(table, filas, columnas) {
                 if (j == 0) {
                     var inputZelda = crearInput('cabecera');
                     inputZelda.value = "A" + i;
-                    llenadoAutomatico(inputZelda, i, 'segundo')
                     td.appendChild(inputZelda);
                 } else {
                     // CREANDO CADA INPUT
@@ -85,14 +83,16 @@ function crearTabla(table, filas, columnas) {
     }
 }
 
-function llenadoAutomatico(input, indice, tipo) {
-    input.addEventListener('keyup', () => {
-        let elementos = document.getElementsByClassName('cabecera');
-        let cambiado;
-        if (tipo === 'primero') cambiado = elementos[indice - 1 + elementos.length / 2];
-        else cambiado = elementos[indice - 1];
-        cambiado.value = input.value;
-    });
+//FUNCIÓN PARA IMPRIMIR MATRIZ EN CONSOLA
+function imprimirMatriz(matriz) {
+    for (let i = 0; i < matriz.length; i++) {
+        let cadena = "";
+        for (let j = 0; j < matriz[i].length; j++) {
+            cadena += "[" + matriz[i][j].x + ", " + matriz[i][j].y + "], ";
+        }
+        console.log(cadena);
+    }
+    console.log("");
 }
 
 // FUNCIÓN PARA CREAR UN INPUT CON LOS ATRIBUTOS SETEADOS
@@ -107,7 +107,7 @@ function crearInput(tipo) {
 function llenarTabla(elementos) {
     var inputsZeldas = document.getElementsByClassName('zelda-input');
     for (var i = 0; i < inputsZeldas.length; i++) {
-        inputsZeldas[i].value = elementos[Math.floor(i / elementos[0].length)][i % elementos.length].x + ", " + elementos[Math.floor(i / elementos[0].length)][i % elementos.length].y;
+        inputsZeldas[i].value = elementos[Math.floor(i / elementos[0].length)][i % elementos[0].length].x + ", " + elementos[Math.floor(i / elementos[0].length)][i % elementos[0].length].y;
     }
 }
 
@@ -146,6 +146,7 @@ function obtenerTabla(tabla) {
 
 // CUERPO DEL PROGRAMA
 document.getElementById('Generar').addEventListener('click', e => {
+
     if (TieneTabla) {
         document.getElementById('miTabla').remove();
         document.getElementById('btn-container').remove();
@@ -157,15 +158,16 @@ document.getElementById('Generar').addEventListener('click', e => {
         // DECLARACIÓN Y DEFINICIÓN DE VARIABLES
         let contenedor = document.getElementById("tablas");
         let respuestas = document.getElementById("respuestas");
-        var filas = parseInt(document.getElementById('filas').value);
-        var columnas = parseInt(document.getElementById('columnas').value);
+        let filas = parseInt(document.getElementById('filas').value);
+        let columnas = parseInt(document.getElementById('columnas').value);
 
         // SE CREA LA TABLA DE CONTENIDOS Y LOS BOTONES
-        var table = document.createElement('table');
-        var buttonContenedor = document.createElement('div');
-        var buttonRandom = document.createElement('button');
-        var buttonNashPura = document.createElement('button');
-        var buttonNashMixta = document.createElement('button');
+        let table = document.createElement('table');
+        let buttonContenedor = document.createElement('div');
+        let buttonRandom = document.createElement('button');
+        let buttonNashPura = document.createElement('button');
+        let buttonNashMixta = document.createElement('button');
+        let buttonDominadas = document.createElement('button');
 
         // SE GENERA EL CONTENEDOR PARA LOS BOTONES
         buttonContenedor.setAttribute('id', 'btn-container');
@@ -178,6 +180,8 @@ document.getElementById('Generar').addEventListener('click', e => {
         // SE GENERA EL BOTÓN PARA HACER LAS ESTRATEGIAS PURAS
         buttonNashPura.setAttribute('id', 'btn-Nash-Pura');
         buttonNashPura.textContent = "Estrategias Puras";
+        buttonDominadas.textContent = "Estrategias dominadas";
+        buttonContenedor.appendChild(buttonDominadas);
         buttonContenedor.appendChild(buttonNashPura);
 
         // SE GENERA EL BOTÓN PARA HACER LAS ESTRATEGIAS MIXAS
@@ -203,6 +207,7 @@ document.getElementById('Generar').addEventListener('click', e => {
         respuestas.setAttribute('id', 'respuestas');
         respuestas.appendChild(document.createElement("p"));
 
+        // LLAMADA AL EVENTO BOTÓN RANDOM
         buttonRandom.addEventListener('click', e => {
             // MATRIZ DE ELEMENTOS
             var elementos = generarRandoms(filas, columnas);
@@ -212,9 +217,88 @@ document.getElementById('Generar').addEventListener('click', e => {
 
             // QUITAR ESTILOS ANTERIORES
             estilosInputs.quitarLosEstilos();
-        })
+        });
 
-        // Llamada de evento Estrategia Pura
+        // LLAMADA DE EVENTO ESTRATEGIA DOMINADA
+        buttonDominadas.addEventListener('click', e => {
+            //SE OBTIENEN LOS ELEMENTOS A PARTIR DE LA TABLA
+            let elementos = obtenerTabla(table);
+            let mayor, menor;
+            let existeEliminacion;
+            let turno = true;
+            console.log("COMIENZO");
+            imprimirMatriz(elementos);
+            do {
+                existeEliminacion = false;
+                if (turno) {
+                    let eliminados;
+                    // SE ANALIZA EN FILAS
+                    for (let i = 0; i < elementos.length; i++) {
+                        for (let j = i; j < elementos.length; j++) {
+                            mayor = 0;
+                            menor = 0;
+                            for (let k = 0; k < elementos[i].length; k++) {
+                                if (elementos[i][k].x > elementos[j][k].x) {
+                                    mayor++;
+                                }
+                                else if (elementos[i][k].x < elementos[j][k].x) {
+                                    menor++;
+                                }
+                            }
+                            if (mayor === elementos[0].length || menor === elementos[0].length) {
+                                existeEliminacion = true;
+                                if (mayor > menor) eliminados = j;
+                                else eliminados = i;
+                                // console.log(eliminados);
+                                break;
+                            }
+                        }
+                        if (existeEliminacion) break;
+                    }
+                    if (existeEliminacion) {
+                        elementos.splice(eliminados, 1);
+                    }
+                }
+                else {
+                    let eliminados;
+                    // SE ANALIZA EN COLUMNAS
+                    for (let i = 0; i < elementos[0].length; i++) {
+                        for (let j = i; j < elementos[0].length; j++) {
+                            mayor = 0;
+                            menor = 0;
+                            for (let k = 0; k < elementos.length; k++) {
+                                if (elementos[k][i].y > elementos[k][j].y) {
+                                    mayor++;
+                                }
+                                else if (elementos[k][i].y < elementos[k][j].y) {
+                                    menor++;
+                                }
+                            }
+                            if (mayor === elementos.length || menor === elementos.length) {
+                                existeEliminacion = true;
+                                if (mayor > menor) eliminados = j;
+                                else eliminados = i;
+                                // console.log(eliminados);
+                                break;
+                            }
+                        }
+                    }
+                    if (existeEliminacion) {
+                        for (let i = 0; i < elementos.length; i++) {
+                            elementos[i].splice(eliminados, 1);
+                        }
+                    }
+                }
+                if (existeEliminacion)
+                    imprimirMatriz(elementos);
+                // SE INVIERTE EL TURNO DEL JUGADOR
+                turno = !turno;
+            } while (existeEliminacion);
+            console.log("FINAL");
+            imprimirMatriz(elementos);
+        });
+
+        // LLAMADA DE EVENTO ESTRATEGIA PURA
         buttonNashPura.addEventListener('click', () => {
             // QUITAR LOS ESTILOS A LA SOLUCIÓN ANTERIOR
             estilosInputs.quitarLosEstilos();
@@ -229,27 +313,25 @@ document.getElementById('Generar').addEventListener('click', e => {
                     mayor = Math.max(mayor, elementos[i][j].y);
                 }
                 for (let j = 0; j < elementos[i].length; j++) {
-                    if (mayor == elementos[i][j].y)
+                    if (mayor === elementos[i][j].y)
                         elementos[i][j].rptaY = true;
                 }
             }
 
             // Buscamos el mayor valor por columnas de "A", es decir, el mayor "x" de cada columna
-            for (let i = 0; i < elementos.length; i++) {
+            for (let j = 0; j < elementos[0].length; j++) {
                 let mayor = 0;
-                for (let j = 0; j < elementos[i].length; j++) {
-                    mayor = Math.max(mayor, elementos[j][i].x);
+                for (let i = 0; i < elementos.length; i++) {
+                    mayor = Math.max(mayor, elementos[i][j].x);
                 }
-                for (let j = 0; j < elementos[i].length; j++) {
-                    if (mayor == elementos[j][i].x)
-                        elementos[j][i].rptaX = true;
-                    y = i;
+                for (let i = 0; i < elementos.length; i++) {
+                    if (mayor === elementos[i][j].x)
+                        elementos[i][j].rptaX = true;
                 }
             }
 
             // Mostramos la respuesta si existe
             // Una respuesta existe si y solo si los elementos "X" e "Y" son los mayores en cada fila y columna a la vez
-
             let nombresDesiciones = document.getElementsByClassName('cabecera');
 
             let solucion = "ENEP = {";
@@ -261,7 +343,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                         estilosInputs.Seleccionados.push(i * elementos[i].length + j);
 
                         // ESTA PARTE DEL CÓDIGO, LA SOLUCIÓN TIENE EN SUS COMPONENTES EL NOMBRE DE LAS DESICIONES
-                        solucion += "(" + nombresDesiciones[i + nombresDesiciones.length / 2].value + ", " + nombresDesiciones[j].value + "), ";
+                        solucion += "(" + nombresDesiciones[i + columnas].value + ", " + nombresDesiciones[j].value + "), ";
                         // SOLUCIÓN ANTIGUA
                         // solucion += "(A" + (i + 1) + ", B" + (j + 1) + "), ";
                     }
