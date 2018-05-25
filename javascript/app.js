@@ -187,6 +187,61 @@ function obtenerTabla(tabla) {
     return elementos;
 }
 
+// FUNCIÓN PARA OBTENER LAS SOLUCIONES DE UNA ECUACIÓN LINEAL
+function eliminacionDeGauss(matriz) {
+    let filas = matriz.length;
+    let columnas = filas + 1;
+    // SIMPLIFICACIÓN DE LA MATRIZ
+    for (let i = 0; i < filas; i++) {
+        let divisor = matriz[i][i];
+
+        for (let j = 0; j < columnas; j++) {
+            matriz[i][j] /= divisor;
+        }
+
+        for (let k = 0; k < filas; k++) {
+            if (i !== k) {
+                let inverso = -1 * matriz[k][i];
+
+                for (let j = 0; j < columnas; j++) {
+                    matriz[k][j] += matriz[i][j] * inverso;
+                }
+            }
+        }
+    }
+    // BÚSQUEDA DE SOLUCIONES
+    let soluciones = new Array(filas);
+    for (let i = 0; i < filas; i++) {
+        soluciones[i] = matriz[i][filas].toFixed(2);
+    }
+    return soluciones;
+}
+
+// OBTIENE LA MATRIZ DE UN JUGADOR A PARTIR DE LA MATRIZ MAESTRA
+function generarMatrizJugador(elementos, jugador) {
+    let dimension = elementos.length;
+    let matriz = new Array(dimension + 1);
+    for (let i = 0; i < matriz.length; i++)
+        matriz[i] = new Array(dimension + 2);
+
+    // SE EXTRAEN LOS DATOS Y SE LES MULTIPLICA POR -1
+    for (let i = 0; i < dimension + 1; i++) {
+        for (let j = 0; j < dimension + 2; j++) {
+            if (i !== dimension) {
+                if (j === dimension) matriz[i][j] = 1;
+                else if (j === dimension + 1) matriz[i][j] = 0;
+                else if (jugador === 'J1') matriz[i][j] = (elementos[i][j].x) * -1;
+                else matriz[i][j] = (elementos[j][i].y) * -1;
+            }
+            else {
+                if (j !== dimension) matriz[i][j] = 1;
+                else matriz[i][j] = 0;
+            }
+        }
+    }
+    return matriz;
+}
+
 // CUERPO DEL PROGRAMA
 document.getElementById('Generar').addEventListener('click', e => {
 
@@ -200,7 +255,7 @@ document.getElementById('Generar').addEventListener('click', e => {
         TieneTabla = true;
         // DECLARACIÓN Y DEFINICIÓN DE VARIABLES
         let contenedor = document.getElementById("tablas");
-        let respuestas = document.getElementById("respuestas");
+        // let respuestas = document.getElementById("respuestas");
         let filas = parseInt(document.getElementById('filas').value);
         let columnas = parseInt(document.getElementById('columnas').value);
 
@@ -246,10 +301,6 @@ document.getElementById('Generar').addEventListener('click', e => {
             estilosInputs.quitarLosEstilos();
         });
 
-        // SE GENERA EL CONTENEDOR PARA LAS RESPUESTAS
-        respuestas.setAttribute('id', 'respuestas');
-        respuestas.appendChild(document.createElement("p"));
-
         // LLAMADA AL EVENTO BOTÓN RANDOM
         buttonRandom.addEventListener('click', e => {
             // MATRIZ DE ELEMENTOS
@@ -265,7 +316,7 @@ document.getElementById('Generar').addEventListener('click', e => {
         /* ===== SOLUCIÓN EN ESTRATEGIAS DOMINADAS ===== */
         buttonDominadas.addEventListener('click', e => {
             // SE OBTIENE EL CONTENEDOR EN DONDE SE COLOCARÁN LAS TABLAS SIMPLIFICADAS
-            let contenedorDominadas = document.getElementById('dominadas');
+            let contenedorDominadas = document.getElementById('estrategiasDominadas');
             contenedorDominadas.innerHTML = "";
 
             // SE OBTIENEN LOS NOMBRES DE LAS CABECERAS
@@ -350,11 +401,14 @@ document.getElementById('Generar').addEventListener('click', e => {
 
         /* ===== SOLUCIÓN EN ESTRATEGIAS PURAS ===== */
         buttonNashPura.addEventListener('click', () => {
+            // DECLARACIÓN DE VARIABLES
+            let estrategiasPuras = document.getElementById('estrategiasPuras');
+            let elementos = obtenerTabla(table);
+
             // QUITAR LOS ESTILOS A LA SOLUCIÓN ANTERIOR
             estilosInputs.quitarLosEstilos();
 
             // ObtenerTabla devolverá una matriz conformada por CElemento;
-            let elementos = obtenerTabla(table);
 
             // Buscamos el mayor valor por filas de "B", es decir, el mayor "y" de cada fila
             for (let i = 0; i < elementos.length; i++) {
@@ -407,13 +461,45 @@ document.getElementById('Generar').addEventListener('click', e => {
             solucion += "}";
 
             if (solucion !== "ENEP =}")
-                respuestas.firstElementChild.innerText = solucion;
+                estrategiasPuras.innerText = solucion;
             else
-                respuestas.firstElementChild.innerText = "No hay respuesta en estrategias puras";
+                estrategiasPuras.innerText = "No hay respuesta en estrategias puras";
 
             // MARCAR LAS RESPUESTAS DE CON COLORES NEÓN
             estilosInputs.marcarRespuestas();
         });
         /* ===== FIN DE ESTRATEGIAS PURAS ===== */
+
+        /* ===== SOLUCIÓN EN ESTRATEGIAS MIXTAS ===== */
+        buttonNashMixta.addEventListener('click', () => {
+            // DECLARACIÓN DE VARIABLES
+            let estrategiasMixtas = document.getElementById('estrategiasMixtas')
+
+            let elementos = obtenerTabla(table);
+            let matrizJ1 = generarMatrizJugador(elementos, 'J1');
+            let matrizJ2 = generarMatrizJugador(elementos, 'J2');
+
+            let probJ1 = eliminacionDeGauss(matrizJ1);
+            let probJ2 = eliminacionDeGauss(matrizJ2);
+
+            let nombres = obtenerNombresCabeceras(filas, columnas);
+
+            let solucion = "ENEM = {";
+            for (let i = 0; i < probJ2.length - 1; i++) {
+                solucion += probJ2[i] + " * " + nombres[1][i] + " + ";
+            }
+            solucion = solucion.slice(0, -3);
+            solucion += ", ";
+
+            for (let i = 0; i < probJ2.length - 1; i++) {
+                solucion += probJ1[i] + " * " + nombres[0][i] + " + ";
+            }
+            solucion = solucion.slice(0, -3);
+
+            solucion += "}";
+
+            estrategiasMixtas.innerText = solucion;
+        });
+        /* ===== FIN DE ESTRATEGIAS MIXTAS ===== */
     }
-})
+});
