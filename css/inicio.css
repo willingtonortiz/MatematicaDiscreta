@@ -18,21 +18,27 @@ html,body{
     width: 100%;
     height: 100%;
 }
-.container{
-    width: 100%;
-    height: 100%;
-    background: #eee;
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    flex-flow: column wrap;
+body{
     background: linear-gradient(135deg,rgba(32,96,128,.5),rgba(16,16,16,.9)),
     url('http://www.100hdwallpapers.com/wallpapers/2560x1600/prism_abstract-widescreen_wallpapers.jpg')
     no-repeat;
     background-attachment: fixed;
     background-position: center center;
     background-size: cover;
+}
+.container{
+    width: 100%;
+    height: 100%;
+    display:flex;
+    padding-top: 50px;
+    justify-content: flex-start;
+    align-items: center;
+    flex-flow: column wrap;
 
+
+}
+.container img{
+    max-width: 500px;
 }
 .container .header-info{
     text-align: center;
@@ -49,10 +55,7 @@ html,body{
     width: 100%;
 
 }
-.container .lista{
-    
-    
-}
+
 .container .lista li{
     font-family: 'IBM Plex Mono', monospace;
     text-align: center;
@@ -63,7 +66,7 @@ html,body{
     margin: 5px 0;
     padding: 10px;
     font-size: 14px;
-    color: #a3a3a3;
+    color: #3fa;
     transition: all .25s ease-in-out;
 }
 .container .lista li:hover{
@@ -158,6 +161,9 @@ html,body{
     background: #2b2b2b;
     border-radius: 50%;
     margin: 0 auto; 
+    background: url('https://my.laureate.net/Faculty/Instructors/PublishingImages/Antonio%20Marcos%20Medina%20Mart%C3%ADnez.jpg') no-repeat;
+    background-position: center center;
+    background-size: cover;
 
 }
 .perfil-profesor .info-profesor h2{
@@ -172,7 +178,7 @@ html,body{
     color: #2b2b2b;
     display: flex;
     justify-content: center;
-    text-align: center;
+    text-align: justify;
 }
 
 .change{
