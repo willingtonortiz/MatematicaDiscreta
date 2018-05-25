@@ -278,6 +278,7 @@ document.getElementById('Generar').addEventListener('click', e => {
         // SE GENERA EL BOTÓN PARA HACER LAS ESTRATEGIAS PURAS
         buttonNashPura.setAttribute('id', 'btn-Nash-Pura');
         buttonNashPura.textContent = "Estrategias Puras";
+        buttonDominadas.setAttribute('id','btn-Nash-dominadas');
         buttonDominadas.textContent = "Estrategias dominadas";
         buttonContenedor.appendChild(buttonDominadas);
         buttonContenedor.appendChild(buttonNashPura);
