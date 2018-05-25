@@ -187,7 +187,7 @@ function obtenerTabla(tabla) {
     return elementos;
 }
 
-// FUNCIÓN PARA OBTENER LAS SOLUCIONES DE UNA ECUACIÓN LINEAL
+// FUNCIÓN PARA OBTENER LAS SOLUCIONES DE UN SISTEMA DE ECUACIONES
 function eliminacionDeGauss(matriz) {
     let filas = matriz.length;
     let columnas = filas + 1;
@@ -220,16 +220,21 @@ function eliminacionDeGauss(matriz) {
 // OBTIENE LA MATRIZ DE UN JUGADOR A PARTIR DE LA MATRIZ MAESTRA
 function generarMatrizJugador(elementos, jugador) {
     let dimension = elementos.length;
+    // MATRIZ
     let matriz = new Array(dimension + 1);
+
+    // ARREGLO DE SOLUCIONES
+    let solucion = new Array(dimension + 1)
+
+    // LLENADO DE LA MATRIZ
     for (let i = 0; i < matriz.length; i++)
-        matriz[i] = new Array(dimension + 2);
+        matriz[i] = new Array(dimension + 1);
 
     // SE EXTRAEN LOS DATOS Y SE LES MULTIPLICA POR -1
     for (let i = 0; i < dimension + 1; i++) {
-        for (let j = 0; j < dimension + 2; j++) {
+        for (let j = 0; j < dimension + 1; j++) {
             if (i !== dimension) {
                 if (j === dimension) matriz[i][j] = 1;
-                else if (j === dimension + 1) matriz[i][j] = 0;
                 else if (jugador === 'J1') matriz[i][j] = (elementos[i][j].x) * -1;
                 else matriz[i][j] = (elementos[j][i].y) * -1;
             }
@@ -239,7 +244,64 @@ function generarMatrizJugador(elementos, jugador) {
             }
         }
     }
-    return matriz;
+
+    for (let i = 0; i < dimension + 1; i++) {
+        if (i === dimension) solucion[i] = 1;
+        else solucion[i] = 0;
+    }
+    return [matriz, solucion];
+}
+
+// FUNCIÓN PARA OBTENER LAS SOLUCIONES DE UN SISTEMA DE ECUACIONES
+function eliminacionGausianaPro(matriz, solucion) {
+    let EPSILON = 1e-10;
+    let dimension = solucion.length;
+
+    for (let pivote = 0; pivote < dimension; pivote++) {
+        // ENCONTRAR EL PIVOTE FILA Y CAMBIAR
+        let max = pivote;
+
+        // SE BUSCA EL MAYOR VALOR PARA LA FILA
+        for (let i = pivote + 1; i < dimension; i++) {
+            if (Math.abs(matriz[i][pivote]) > Math.abs(matriz[max][pivote])) {
+                max = i;
+            }
+        }
+
+        let temp = matriz[pivote];
+        matriz[pivote] = matriz[max];
+        matriz[max] = temp;
+        let t = solucion[pivote];
+        solucion[pivote] = solucion[max];
+        solucion[max] = t;
+
+        // SINGULAR O CERCANAMENTE SINGULAR
+        if (Math.abs(matriz[pivote][pivote]) <= EPSILON) {
+            console.log("No hay solucion");
+            return 0;
+        }
+
+        // pivot within A and b
+        // PIVOTE ENTREN A Y B
+        for (let i = pivote + 1; i < dimension; i++) {
+            let alpha = matriz[i][pivote] / matriz[pivote][pivote];
+            solucion[i] -= alpha * solucion[pivote];
+            for (let j = pivote; j < dimension; j++) {
+                matriz[i][j] -= alpha * matriz[pivote][j];
+            }
+        }
+    }
+
+    // back substitution
+    let x = new Array(dimension);
+    for (let i = dimension - 1; i >= 0; i--) {
+        let sum = 0.0;
+        for (let j = i + 1; j < dimension; j++) {
+            sum += matriz[i][j] * x[j];
+        }
+        x[i] = ((solucion[i] - sum) / matriz[i][i]).toFixed(2);
+    }
+    return x;
 }
 
 // CUERPO DEL PROGRAMA
@@ -278,7 +340,7 @@ document.getElementById('Generar').addEventListener('click', e => {
         // SE GENERA EL BOTÓN PARA HACER LAS ESTRATEGIAS PURAS
         buttonNashPura.setAttribute('id', 'btn-Nash-Pura');
         buttonNashPura.textContent = "Estrategias Puras";
-        buttonDominadas.setAttribute('id','btn-Nash-dominadas');
+        buttonDominadas.setAttribute('id', 'btn-Nash-dominadas');
         buttonDominadas.textContent = "Estrategias dominadas";
         buttonContenedor.appendChild(buttonDominadas);
         buttonContenedor.appendChild(buttonNashPura);
@@ -480,8 +542,8 @@ document.getElementById('Generar').addEventListener('click', e => {
             let matrizJ1 = generarMatrizJugador(elementos, 'J1');
             let matrizJ2 = generarMatrizJugador(elementos, 'J2');
 
-            let probJ1 = eliminacionDeGauss(matrizJ1);
-            let probJ2 = eliminacionDeGauss(matrizJ2);
+            let probJ1 = eliminacionGausianaPro(matrizJ1[0], matrizJ1[1]);
+            let probJ2 = eliminacionGausianaPro(matrizJ2[0], matrizJ2[1]);
 
             let nombres = obtenerNombresCabeceras(filas, columnas);
 
