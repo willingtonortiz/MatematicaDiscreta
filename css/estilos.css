@@ -15,8 +15,13 @@ body {
     height: 100vh;
     background: linear-gradient(
         45deg,
-        #eee 50%,#ededed 50%
-    );
+        #fff
+        #eee
+    ),url('../img/im2.jpg') no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center center;
+    /* background: #1e1e1e; */
     font-size: 18px;
 }
 
@@ -57,7 +62,8 @@ table {
         45deg,
         rgba(32,32,32,.9),
         rgba(42, 39, 61, 0.9)
-    ),url('../img/im1.jpg') no-repeat;
+    );
+    /* ,url('../img/im1.jpg') no-repeat; */
     background-attachment: fixed;
     background-position: center center;
     background-size: contain;
@@ -242,5 +248,13 @@ button:active {
     padding: 10px 20px;
     border-radius: 5px;
     color: #3d5;
+    cursor: pointer;
+}
+#btn-Nash-dominadas{
+    background: transparent;
+    border: 1px solid #ff5533;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #ff5533;
     cursor: pointer;
 }
