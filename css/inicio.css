@@ -18,6 +18,7 @@ html,body{
     width: 100%;
     height: 100%;
 }
+
 body{
     background: linear-gradient(135deg,rgba(32,96,128,.5),rgba(16,16,16,.9)),
     url('http://www.100hdwallpapers.com/wallpapers/2560x1600/prism_abstract-widescreen_wallpapers.jpg')
@@ -26,6 +27,7 @@ body{
     background-position: center center;
     background-size: cover;
 }
+
 .container{
     width: 100%;
     height: 100%;
@@ -34,26 +36,26 @@ body{
     justify-content: flex-start;
     align-items: center;
     flex-flow: column wrap;
-
-
 }
+
 .container img{
-    max-width: 500px;
+    max-width: 400px;
 }
+
 .container .header-info{
     text-align: center;
     width: 50%;
 }
+
 .container .header-info h1{
     text-transform: uppercase;
     font-family: 'IBM Plex Sans', sans-serif;
-    
 }
+
 .container .header-info p{
     text-align: center;
     font-family: 'IBM Plex Mono', monospace;
     width: 100%;
-
 }
 
 .container .lista li{
@@ -69,10 +71,10 @@ body{
     color: #3fa;
     transition: all .25s ease-in-out;
 }
+
 .container .lista li:hover{
     color: #fff;
 }
-
 
 #entrar{
     width: 100px;
@@ -84,10 +86,11 @@ body{
     display: block;
     transition: all .2s ease-in-out;
 }
+
 #entrar:active{
     transform: scale(.95);
-
 }
+
 .Profesor{
     width: 100%;
     height: 100%;
@@ -104,10 +107,11 @@ body{
     align-items: center;
     padding: 20px 50px;
 }
+
 .Profesor h2{
-    color: #3fa;
-    
+    color: #3fa;  
 }
+
 .Instrucciones{
     width: 100%;
     height: 100%;
@@ -123,6 +127,8 @@ body{
     align-items: center;
     padding: 20px 50px;
 }
+
+/****** Código para Desrrolladores ******/
 .Desarrolladores{    
     width: 100%;
     height: 100%;
@@ -131,13 +137,21 @@ body{
     left: 0;
     opacity: 0;
     z-index: -1;
-    background-color: rgba(0,0,0,.7);
+    background-color: rgba(0,0,0,.85);
     transition:  all .2s ease-in-out;
     display: flex;
+    flex-flow: column wrap;
     justify-content: center;
     align-items: center;
     padding: 20px 50px;
+    font-size: 22px;
 }
+
+.Desarrolladores p,
+.Desarrolladores h2{
+    margin-bottom: 1em;
+}
+
 .icon-close{
     position: absolute;
     top: 10px;
@@ -146,6 +160,7 @@ body{
     cursor: pointer;
     font-size: 48px;
 }
+
 .perfil-profesor{
     width: 40%;
     margin: 0 auto;
@@ -155,6 +170,7 @@ body{
     border-radius: 5px;
     padding: 50px;
 }
+
 .perfil-profesor .circle{
     width: 150px;
     height: 150px;
@@ -164,15 +180,15 @@ body{
     background: url('https://my.laureate.net/Faculty/Instructors/PublishingImages/Antonio%20Marcos%20Medina%20Mart%C3%ADnez.jpg') no-repeat;
     background-position: center center;
     background-size: cover;
-
 }
+
 .perfil-profesor .info-profesor h2{
     text-align: center;
     font-family: 'IBM Plex Sans', sans-serif;
     margin: 20px 0;
     color: #2b2b2b;
-
 }
+
 .perfil-profesor .info-profesor p{
     font-family: 'IBM Plex Mono', monospace;
     color: #2b2b2b;
