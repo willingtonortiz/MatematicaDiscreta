@@ -64,8 +64,7 @@ function crearTablaInputs(table, filas, columnas) {
                     inputZelda.value = "A" + j;
                     th.appendChild(inputZelda);
                 }
-            }
-            else {
+            } else {
                 var td = document.createElement('td');
                 tr.appendChild(td)
                 if (j == 0) {
@@ -113,8 +112,7 @@ function crearTabla(filas, columnas, elementos, nombres) {
                 if (j != 0) {
                     celda.innerText = nombres[0][j - 1];
                 }
-            }
-            else {
+            } else {
                 if (j == 0) {
                     celda.innerText = nombres[1][i - 1];
                 } else {
@@ -237,8 +235,7 @@ function generarMatrizJugador(elementos, jugador) {
                 if (j === dimension) matriz[i][j] = 1;
                 else if (jugador === 'J1') matriz[i][j] = (elementos[i][j].x) * -1;
                 else matriz[i][j] = (elementos[j][i].y) * -1;
-            }
-            else {
+            } else {
                 if (j !== dimension) matriz[i][j] = 1;
                 else matriz[i][j] = 0;
             }
@@ -304,6 +301,41 @@ function eliminacionGausianaPro(matriz, solucion) {
     return x;
 }
 
+// FUNCIÓN PARA GENERAR LOS BOTONES
+function crearBotones(contenedorPrincipal) {
+    // CONTENEDOR
+    let buttonContenedor = document.createElement('div');
+    buttonContenedor.setAttribute('id', 'btn-container');
+    // RANDOM
+    let buttonRandom = document.createElement('button');
+    buttonRandom.setAttribute('id', 'btn-random');
+    buttonRandom.textContent = "Generar valores Random";
+    buttonContenedor.appendChild(buttonRandom);
+    // BOTÓN DOMINADAS
+    let buttonDominadas = document.createElement('button');
+    buttonDominadas.setAttribute('id', 'btn-Nash-dominadas');
+    buttonDominadas.textContent = "Estrategias dominadas";
+    buttonContenedor.appendChild(buttonDominadas);
+    // BOTÓN PURAS
+    let buttonPura = document.createElement('button');
+    buttonPura.setAttribute('id', 'btn-Nash-Pura');
+    buttonPura.textContent = "Estrategias Puras";
+    buttonContenedor.appendChild(buttonPura);
+    // BOTÓN MIXTAS
+    let buttonMixta = document.createElement('button');
+    buttonMixta.setAttribute('id', 'btn-Nash-Mixta');
+    buttonMixta.textContent = "Estrategia Mixta";
+    buttonContenedor.appendChild(buttonMixta);
+    // SE AGREGA AL CONTENEDOR PRINCIPAL
+    contenedorPrincipal.appendChild(buttonContenedor);
+}
+
+function crearContenedorTexto(tipo, texto) {
+    let contenedor = document.createElement(tipo);
+    contenedor.innerText = texto;
+    return contenedor;
+}
+
 // CUERPO DEL PROGRAMA
 document.getElementById('Generar').addEventListener('click', e => {
 
@@ -316,60 +348,28 @@ document.getElementById('Generar').addEventListener('click', e => {
     if (!TieneTabla) {
         TieneTabla = true;
         // DECLARACIÓN Y DEFINICIÓN DE VARIABLES
-        let contenedor = document.getElementById("tablas");
-        // let respuestas = document.getElementById("respuestas");
+        let contenedorPrincipal = document.getElementById('principal');
         let filas = parseInt(document.getElementById('filas').value);
         let columnas = parseInt(document.getElementById('columnas').value);
 
-        // SE CREA LA TABLA DE CONTENIDOS Y LOS BOTONES
+        /* SE GENERAN LOS BOTONES */
+        crearBotones(contenedorPrincipal);
+
+        /* SE CREA LA TABLA CON LOS INPUTS */
         let table = document.createElement('table');
-        let buttonContenedor = document.createElement('div');
-        let buttonRandom = document.createElement('button');
-        let buttonNashPura = document.createElement('button');
-        let buttonNashMixta = document.createElement('button');
-        let buttonDominadas = document.createElement('button');
-
-        // SE GENERA EL CONTENEDOR PARA LOS BOTONES
-        buttonContenedor.setAttribute('id', 'btn-container');
-
-        // SE GENERA EL BOTÓN PARA VALORES RANDOM
-        buttonRandom.setAttribute('id', 'btn-random');
-        buttonRandom.textContent = "Generar valores Random";
-        buttonContenedor.appendChild(buttonRandom);
-
-        // SE GENERA EL BOTÓN PARA HACER LAS ESTRATEGIAS PURAS
-        buttonNashPura.setAttribute('id', 'btn-Nash-Pura');
-        buttonNashPura.textContent = "Estrategias Puras";
-        buttonDominadas.setAttribute('id', 'btn-Nash-dominadas');
-        buttonDominadas.textContent = "Estrategias dominadas";
-        buttonContenedor.appendChild(buttonDominadas);
-        buttonContenedor.appendChild(buttonNashPura);
-
-        // SE GENERA EL BOTÓN PARA HACER LAS ESTRATEGIAS MIXAS
-
-        buttonNashMixta.setAttribute('id', 'btn-Nash-Mixta');
-        buttonNashMixta.textContent = "Estrategia Mixta";
-        buttonContenedor.appendChild(buttonNashMixta);
-
-        contenedor.appendChild(buttonContenedor);
-        // SE GENERA LA TABLA
         table.setAttribute('id', 'miTabla');
-        contenedor.appendChild(table);
-
-        // SE CREA LA TABLA
-        crearTablaInputs(table, filas, columnas);
-
-        // SI SE PRESIONA UN BOTÓN EN CUALQUIER INPUT, SE QUITAN LOS ESTILOS
+        crearTablaInputs(table, filas, columnas); // AGREGANDO INPUTS
+        contenedorPrincipal.appendChild(table);
         table.addEventListener('keypress', (e) => {
             estilosInputs.quitarLosEstilos();
-        });
+        }); // SI SE PRESIONA UN BOTÓN EN CUALQUIER INPUT, SE QUITAN LOS ESTILOS
 
         // LLAMADA AL EVENTO BOTÓN RANDOM
-        buttonRandom.addEventListener('click', e => {
+        document.querySelector('#btn-random').addEventListener('click', () => {
             // MATRIZ DE ELEMENTOS
-            var elementos = generarRandoms(filas, columnas);
+            let elementos = generarRandoms(filas, columnas);
 
-            // LLENADO DE TABLAS
+            // LLENADO DE LOS INPUTS DE LA TABLA
             llenarTabla(elementos, filas, columnas);
 
             // QUITAR ESTILOS ANTERIORES
@@ -377,10 +377,10 @@ document.getElementById('Generar').addEventListener('click', e => {
         });
 
         /* ===== SOLUCIÓN EN ESTRATEGIAS DOMINADAS ===== */
-        buttonDominadas.addEventListener('click', e => {
+        document.querySelector('#btn-Nash-dominadas').addEventListener('click', () => {
             // SE OBTIENE EL CONTENEDOR EN DONDE SE COLOCARÁN LAS TABLAS SIMPLIFICADAS
             let contenedorDominadas = document.getElementById('estrategiasDominadas');
-            contenedorDominadas.innerHTML = "";
+            contenedorDominadas.innerHTML = '';
 
             // SE OBTIENEN LOS NOMBRES DE LAS CABECERAS
             let nombresCabeceras = obtenerNombresCabeceras(filas, columnas);
@@ -390,6 +390,7 @@ document.getElementById('Generar').addEventListener('click', e => {
             let mayor, menor;
             let existeEliminacion;
             let turno = true;
+            let paso = 0;
             do {
                 existeEliminacion = false;
                 if (turno) {
@@ -402,8 +403,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                             for (let k = 0; k < elementos[i].length; k++) {
                                 if (elementos[i][k].x > elementos[j][k].x) {
                                     mayor++;
-                                }
-                                else if (elementos[i][k].x < elementos[j][k].x) {
+                                } else if (elementos[i][k].x < elementos[j][k].x) {
                                     menor++;
                                 }
                             }
@@ -420,8 +420,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                         elementos.splice(eliminados, 1);
                         nombresCabeceras[1].splice(eliminados, 1);
                     }
-                }
-                else {
+                } else {
                     let eliminados;
                     // SE ANALIZA EN COLUMNAS
                     for (let i = 0; i < elementos[0].length; i++) {
@@ -431,8 +430,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                             for (let k = 0; k < elementos.length; k++) {
                                 if (elementos[k][i].y > elementos[k][j].y) {
                                     mayor++;
-                                }
-                                else if (elementos[k][i].y < elementos[k][j].y) {
+                                } else if (elementos[k][i].y < elementos[k][j].y) {
                                     menor++;
                                 }
                             }
@@ -454,16 +452,24 @@ document.getElementById('Generar').addEventListener('click', e => {
                 }
                 if (existeEliminacion) {
                     // SE INVIERTE EL TURNO DEL JUGADOR
+                    paso++;
+                    if (paso === 1) {
+                        contenedorDominadas.appendChild(crearContenedorTexto('h2', 'Estrategias Dominadas'));
+                    }
                     turno = !turno;
                     let tablaTemp = crearTabla(elementos.length, elementos[0].length, elementos, nombresCabeceras);
+                    tablaTemp.setAttribute('class', 'tablaDominada');
+                    contenedorDominadas.appendChild(crearContenedorTexto('p', 'Paso ' + paso + ':'))
                     contenedorDominadas.appendChild(tablaTemp);
                 }
             } while (existeEliminacion);
+            if (paso === 0) {
+                contenedorDominadas.appendChild(crearContenedorTexto('h2', 'No hay solución en Estrategias Dominadas'));
+            }
         });
-        /* ===== FIN ESTRATEGIAS PURAS ===== */
 
         /* ===== SOLUCIÓN EN ESTRATEGIAS PURAS ===== */
-        buttonNashPura.addEventListener('click', () => {
+        document.querySelector('#btn-Nash-Pura').addEventListener('click', () => {
             // DECLARACIÓN DE VARIABLES
             let estrategiasPuras = document.getElementById('estrategiasPuras');
             let elementos = obtenerTabla(table);
@@ -513,8 +519,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                         solucion += "(" + nombresDesiciones[i + columnas].value + ", " + nombresDesiciones[j].value + "), ";
                         // SOLUCIÓN ANTIGUA
                         // solucion += "(A" + (i + 1) + ", B" + (j + 1) + "), ";
-                    }
-                    else {
+                    } else {
                         // MARCANDO LOS INPUTS QUE NO SON RESPUESTAS
                         estilosInputs.NoSeleccionados.push(i * elementos[i].length + j);
                     }
@@ -531,10 +536,9 @@ document.getElementById('Generar').addEventListener('click', e => {
             // MARCAR LAS RESPUESTAS DE CON COLORES NEÓN
             estilosInputs.marcarRespuestas();
         });
-        /* ===== FIN DE ESTRATEGIAS PURAS ===== */
 
         /* ===== SOLUCIÓN EN ESTRATEGIAS MIXTAS ===== */
-        buttonNashMixta.addEventListener('click', () => {
+        document.querySelector('#btn-Nash-Mixta').addEventListener('click', () => {
             // DECLARACIÓN DE VARIABLES
             let estrategiasMixtas = document.getElementById('estrategiasMixtas')
 
@@ -563,6 +567,5 @@ document.getElementById('Generar').addEventListener('click', e => {
 
             estrategiasMixtas.innerText = solucion;
         });
-        /* ===== FIN DE ESTRATEGIAS MIXTAS ===== */
     }
 });
