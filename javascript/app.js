@@ -339,6 +339,9 @@ function crearContenedorTexto(tipo, texto) {
 // CUERPO DEL PROGRAMA
 document.getElementById('Generar').addEventListener('click', e => {
 
+    // SI HABÍA CONTENIDO EN LAS SOLUCIONES, SE ELIMINA
+    document.getElementById('soluciones').innerHTML = "";
+
     if (TieneTabla) {
         document.getElementById('miTabla').remove();
         document.getElementById('btn-container').remove();
@@ -379,7 +382,7 @@ document.getElementById('Generar').addEventListener('click', e => {
         /* ===== SOLUCIÓN EN ESTRATEGIAS DOMINADAS ===== */
         document.querySelector('#btn-Nash-dominadas').addEventListener('click', () => {
             // SE OBTIENE EL CONTENEDOR EN DONDE SE COLOCARÁN LAS TABLAS SIMPLIFICADAS
-            let contenedorDominadas = document.getElementById('estrategiasDominadas');
+            let contenedorDominadas = document.getElementById('soluciones');
             contenedorDominadas.innerHTML = '';
 
             // SE OBTIENEN LOS NOMBRES DE LAS CABECERAS
@@ -391,6 +394,7 @@ document.getElementById('Generar').addEventListener('click', e => {
             let existeEliminacion;
             let turno = true;
             let paso = 0;
+            let nombreEliminado = "";
             do {
                 existeEliminacion = false;
                 if (turno) {
@@ -418,7 +422,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                     }
                     if (existeEliminacion) {
                         elementos.splice(eliminados, 1);
-                        nombresCabeceras[1].splice(eliminados, 1);
+                        nombreEliminado = nombresCabeceras[1].splice(eliminados, 1);
                     }
                 } else {
                     let eliminados;
@@ -438,7 +442,6 @@ document.getElementById('Generar').addEventListener('click', e => {
                                 existeEliminacion = true;
                                 if (mayor > menor) eliminados = j;
                                 else eliminados = i;
-                                // console.log(eliminados);
                                 break;
                             }
                         }
@@ -447,7 +450,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                         for (let i = 0; i < elementos.length; i++) {
                             elementos[i].splice(eliminados, 1);
                         }
-                        nombresCabeceras[0].splice(eliminados, 1);
+                        nombreEliminado = nombresCabeceras[0].splice(eliminados, 1);
                     }
                 }
                 if (existeEliminacion) {
@@ -459,55 +462,68 @@ document.getElementById('Generar').addEventListener('click', e => {
                     turno = !turno;
                     let tablaTemp = crearTabla(elementos.length, elementos[0].length, elementos, nombresCabeceras);
                     tablaTemp.setAttribute('class', 'tablaDominada');
-                    contenedorDominadas.appendChild(crearContenedorTexto('p', 'Paso ' + paso + ':'))
+                    let texto = 'Paso ' + paso + ': Se elimina ' + ((turno) ? 'la columna' : 'la fila') + ' dominada ' + nombreEliminado;
+                    contenedorDominadas.appendChild(crearContenedorTexto('p', texto))
                     contenedorDominadas.appendChild(tablaTemp);
                 }
             } while (existeEliminacion);
-            if (paso === 0) {
+            if (paso === 0 || (nombresCabeceras[0].length !== 1 && nombresCabeceras[1].length !== 1)) {
                 contenedorDominadas.appendChild(crearContenedorTexto('h2', 'No hay solución en Estrategias Dominadas'));
+            } else {
+                let respuesta = 'Equilibrio de Nash en "Estrategias Dominadas" = {(' + nombresCabeceras[1][0] + ", " + nombresCabeceras[0][0] + ")}";
+                contenedorDominadas.appendChild(crearContenedorTexto('p', respuesta));
             }
         });
 
         /* ===== SOLUCIÓN EN ESTRATEGIAS PURAS ===== */
         document.querySelector('#btn-Nash-Pura').addEventListener('click', () => {
             // DECLARACIÓN DE VARIABLES
-            let estrategiasPuras = document.getElementById('estrategiasPuras');
+            let estrategiasPuras = document.getElementById('soluciones');
+            estrategiasPuras.innerHTML = "";
             let elementos = obtenerTabla(table);
 
             // QUITAR LOS ESTILOS A LA SOLUCIÓN ANTERIOR
             estilosInputs.quitarLosEstilos();
 
-            // ObtenerTabla devolverá una matriz conformada por CElemento;
-
             // Buscamos el mayor valor por filas de "B", es decir, el mayor "y" de cada fila
+            let marcasFila = "Elementos encontrados: ";
             for (let i = 0; i < elementos.length; i++) {
                 let mayor = 0;
                 for (let j = 0; j < elementos[i].length; j++) {
                     mayor = Math.max(mayor, elementos[i][j].y);
                 }
                 for (let j = 0; j < elementos[i].length; j++) {
-                    if (mayor === elementos[i][j].y)
+                    if (mayor === elementos[i][j].y) {
                         elementos[i][j].rptaY = true;
+                        marcasFila += elementos[i][j].y + ", ";
+                    }
                 }
             }
+            marcasFila = marcasFila.slice(0, -2);
 
             // Buscamos el mayor valor por columnas de "A", es decir, el mayor "x" de cada columna
+            let marcasColumna = "Elementos encontrados: ";
             for (let j = 0; j < elementos[0].length; j++) {
                 let mayor = 0;
                 for (let i = 0; i < elementos.length; i++) {
                     mayor = Math.max(mayor, elementos[i][j].x);
                 }
                 for (let i = 0; i < elementos.length; i++) {
-                    if (mayor === elementos[i][j].x)
+                    if (mayor === elementos[i][j].x) {
                         elementos[i][j].rptaX = true;
+                        marcasColumna += elementos[i][j].x + ", ";
+                    }
                 }
             }
+            marcasColumna = marcasColumna.slice(0, -2);
 
             // Mostramos la respuesta si existe
             // Una respuesta existe si y solo si los elementos "X" e "Y" son los mayores en cada fila y columna a la vez
             let nombresDesiciones = document.getElementsByClassName('cabecera');
 
-            let solucion = "ENEP = {";
+            // SE DECLARAN LOS CONTENEDORES DE LA SOLUCIÓN
+            let marcasRespuesta = "Elementos encontrados: "
+            let solucion = 'Equilibrio de Nash en "Estrategias Puras" = {';
             for (let i = 0; i < elementos.length; i++) {
                 for (let j = 0; j < elementos[i].length; j++) {
                     // CONDICIÓN PARA QUE SEA UNA RESPUESTA
@@ -517,21 +533,30 @@ document.getElementById('Generar').addEventListener('click', e => {
 
                         // ESTA PARTE DEL CÓDIGO, LA SOLUCIÓN TIENE EN SUS COMPONENTES EL NOMBRE DE LAS DESICIONES
                         solucion += "(" + nombresDesiciones[i + columnas].value + ", " + nombresDesiciones[j].value + "), ";
-                        // SOLUCIÓN ANTIGUA
-                        // solucion += "(A" + (i + 1) + ", B" + (j + 1) + "), ";
+
+                        // SE SELECCIONAN LOS ELEMENTOS PARA MOSTRAR
+                        marcasRespuesta += "(" + elementos[i][j].x + ", " + elementos[i][j].y + "), ";
                     } else {
                         // MARCANDO LOS INPUTS QUE NO SON RESPUESTAS
                         estilosInputs.NoSeleccionados.push(i * elementos[i].length + j);
                     }
                 }
             }
+            marcasRespuesta = marcasRespuesta.slice(0, -2);
             solucion = solucion.slice(0, -2);
             solucion += "}";
 
-            if (solucion !== "ENEP =}")
-                estrategiasPuras.innerText = solucion;
-            else
-                estrategiasPuras.innerText = "No hay respuesta en estrategias puras";
+            if (solucion !== 'Equilibrio de Nash en "Estrategias Puras" =}') {
+                estrategiasPuras.appendChild(crearContenedorTexto('h2', 'Estratagias Puras'));
+                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 1: Se busca los mayores elementos "Y" de cada fila'));
+                estrategiasPuras.appendChild(crearContenedorTexto('p', marcasFila));
+                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 2: Se busca los mayores elementos "X" de cada columna'));;
+                estrategiasPuras.appendChild(crearContenedorTexto('p', marcasColumna));
+                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 3: Se seleccionan los elementos que cumplan con la condición de ser los mayores de su fila y columna'));;
+                estrategiasPuras.appendChild(crearContenedorTexto('p', marcasRespuesta));
+                estrategiasPuras.appendChild(crearContenedorTexto('p', solucion));
+            } else
+                estrategiasPuras.appendChild(crearContenedorTexto('h2', "No hay solución en Estrategias Puras"));
 
             // MARCAR LAS RESPUESTAS DE CON COLORES NEÓN
             estilosInputs.marcarRespuestas();
@@ -540,7 +565,8 @@ document.getElementById('Generar').addEventListener('click', e => {
         /* ===== SOLUCIÓN EN ESTRATEGIAS MIXTAS ===== */
         document.querySelector('#btn-Nash-Mixta').addEventListener('click', () => {
             // DECLARACIÓN DE VARIABLES
-            let estrategiasMixtas = document.getElementById('estrategiasMixtas')
+            let estrategiasMixtas = document.getElementById('soluciones')
+            estrategiasMixtas.innerHTML = "";
 
             let elementos = obtenerTabla(table);
             let matrizJ1 = generarMatrizJugador(elementos, 'J1');
@@ -551,7 +577,9 @@ document.getElementById('Generar').addEventListener('click', e => {
 
             let nombres = obtenerNombresCabeceras(filas, columnas);
 
-            let solucion = "ENEM = {";
+            estrategiasMixtas.appendChild(crearContenedorTexto('h2', 'Estrategias Mixtas'));
+
+            let solucion = 'Equilibrio de Nash en "Estrategias Mixtas" = {';
             for (let i = 0; i < probJ2.length - 1; i++) {
                 solucion += probJ2[i] + " * " + nombres[1][i] + " + ";
             }
@@ -565,7 +593,7 @@ document.getElementById('Generar').addEventListener('click', e => {
 
             solucion += "}";
 
-            estrategiasMixtas.innerText = solucion;
+            estrategiasMixtas.appendChild(crearContenedorTexto('p', solucion));
         });
     }
 });

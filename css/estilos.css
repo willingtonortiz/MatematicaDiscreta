@@ -13,7 +13,6 @@
 
 body {
     width: 100%;
-    /* height: 100vh; */
     background: linear-gradient( 45deg, #fff #eee), url('../img/im2.jpg') no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -36,7 +35,6 @@ h1 {
 }
 
 /* ===== ESTILOS DE FORMULARIO ===== */
-
 button {
     margin: 0 10px;
 }
@@ -46,7 +44,6 @@ label {
 }
 
 /* ===== ESTILOS DE TABLA ===== */
-
 table {
     border-collapse: collapse;
     width: 75%;
@@ -57,28 +54,32 @@ table {
     background-attachment: fixed;
     background-position: center center;
     background-size: contain;
+    transition: all .3s;
 }
 
-table tr th {
-    border: 1px solid #555;
+table:hover {
+    box-shadow: 0 0 10px 5px darkgray;
+}
+
+table,
+th,
+td {
+    border: 3px solid #3fa;
+}
+
+table tr th,
+table tr td {
     padding: 1em;
-    color: #12f;
-    /* background: #2b2b2b; */
 }
 
 table tr td {
     transition: all .3s ease-in-out;
     text-align: center;
-    padding: 1em;
-    border: 1px solid #555;
-    /* background: #2b2b2b; */
 }
 
 table tr:nth-child(1) th input,
 table tr:nth-child(1) td {
-    padding: 1em;
     color: #3fa;
-    text-align: center;
 }
 
 table tr td:nth-child(1) input,
@@ -86,25 +87,17 @@ table tr td:nth-child(1) {
     color: #3fa;
 }
 
-table tr:nth-child(odd) {
-    /* background: rgba(32,32,32,1); */
-}
-
-table tr:nth-child(even) {
-    /* background: rgba(155,155,155,1); */
-}
-
 /* ESTILOS PARA LAS CELDAS */
 .zelda-input,
 .cabecera {
+    padding: 10px;
     width: 100%;
     margin: 0 auto;
     border: none;
     background: transparent;
-    padding: 10px;
     font-size: 18px;
     color: #eee;
-    transition: all .2s ease-in-out;
+    transition: all .3s ease-in-out;
     text-align: center;
     position: relative;
     border-radius: 5px;
@@ -122,9 +115,7 @@ table tr:nth-child(even) {
 
 .selected {
     transition: all .41s ease-in-out;
-    color: #fff;
     text-shadow: 0 0 5px #fff;
-    /* background:  rgba(24,24,24,1); */
 }
 
 .unselected {
@@ -136,6 +127,7 @@ table tr:nth-child(even) {
     color: #2b2b2b;
 }
 
+/* ===== ESTILOS DE LOS INPUTS ===== */
 .input-data {
     background: rgba(32, 32, 16, .02);
     border-radius: 5px;
@@ -180,17 +172,22 @@ table tr:nth-child(even) {
     position: relative;
 }
 
-#Generar {
-    /* border: none; */
+#Generar,
+#btn-random,
+#btn-Nash-dominadas,
+#btn-Nash-Pura,
+#btn-Nash-Mixta {
+    background: transparent;
+    cursor: pointer;
     padding: 10px 20px;
     border-radius: 5px;
-    /* background: linear-gradient(45deg, rgba(25, 125, 255, 1), rgba(25, 225, 125, 1)); */
+    transition: all .2s ease-in-out;
+}
+
+#Generar {
     color: #2b2b2b;
-    background: transparent;
     border: 1px solid #2b2b2b;
     margin: 10px;
-    transition: all .2s ease-in-out;
-    cursor: pointer;
 }
 
 #btn-container {
@@ -206,103 +203,60 @@ button:active {
 }
 
 #btn-random {
-    background: transparent;
     border: 1px solid #2b2b2b;
-    padding: 10px 20px;
-    border-radius: 5px;
     color: #2b2b2b;
-    cursor: pointer;
 }
 
 #btn-Nash-dominadas {
-    background: transparent;
     border: 1px solid #ff5533;
-    padding: 10px 20px;
-    border-radius: 5px;
     color: #ff5533;
-    cursor: pointer;
 }
 
 #btn-Nash-Pura {
-    background: transparent;
     border: 1px solid #349af5;
-    padding: 10px 20px;
-    border-radius: 5px;
     color: #349af5;
-    cursor: pointer;
 }
 
 #btn-Nash-Mixta {
-    background: transparent;
     border: 1px solid #3d5;
-    padding: 10px 20px;
-    border-radius: 5px;
     color: #3d5;
-    cursor: pointer;
+}
+
+#Generar:hover,
+#btn-random:hover,
+#btn-Nash-dominadas:hover,
+#btn-Nash-Pura:hover,
+#btn-Nash-Mixta:hover {
+    box-shadow: 0 0 5px 3px darkgray;
 }
 
 /* SOLUCIONES [EQUILIBRIO DE NASH] */
-
-/* CONTENEDOR PARA SOLUCIONES */
-
 #soluciones {
-    margin-top: 3em;
-}
-
-#estrategiasDominadas,
-#estrategiasPuras,
-#estrategiasMixtas {
+    margin: 5%;
+    padding: 2em;
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
     margin-bottom: 3em;
+    border-radius: 25px;
+    transition: all .3s;
 }
 
-/* SOLUCIÓN PARA DOMINADAS */
-#estrategiasDominadas {}
+#soluciones:hover {
+    box-shadow: 0 0 10px 5px darkgray;
+    cursor: pointer;
+}
+
+#soluciones h2,
+#soluciones p {
+    display: inherit;
+    justify-content: inherit;
+    align-content: center;
+    margin: 1em 0;
+}
 
 .tablaDominada {
-    border-collapse: collapse;
-    width: 50%;
+    width: 65%;
+    transition: all .3s;
 }
-
-#estrategiasDominadas h2{
-    margin-bottom: 2em;
-}
-
-/* #estrategiasDominadas p, 
-#estrategiasDominadas h2{
-    border: 2px solid red;
-} */
-
-/* SOLUCIÓN PARA PURAS */
-#estrategiasPuras {}
-
-
-/* SOLUCIÓN PARA MIXTAS */
-#estrategiasMixtas {}
-
-/* EL OBJETIVO DE TODO JUGADOR ES MAXIMIZAR SU UTILIDAD
- EQUILIBRIO DE NASH: Una elección de estrategias de los 
- jugadores es equilibrio de Nash si ninguno puede 
- mejorar su ganancia cambiando unilateralmente de estrategia
-ESTRATEGIA PURA:
-EQUILIBRIO ÚNICO {DILEMA DEL PRISIONERO}
-SIN EQUILIBRIO {PIEDRA PAPEL O TIJERA}
-VARIOS EQUILIBRIOS {LA BATALLA DE LOS SEXOS}
-ESTRATEGIA MIXTA: SE ELIJE CADA ESTRATEGIA CON PURA
-PROBABILIDAD
-TEORÍA DE JUEGOS:
-CLASICA: 
-LOS JUGADORES SON RACIONALES
-LAS ESTRATEGIAS SON ELEGIBLES
-TODOS INTERACTUAN
-RESULTADOS: UTILIDAD
-DOMINADAS, MIXTAS Y PURAS
-EVOLUTIVA [ANIMALES]: LOS JUGADORES SON IRRACIONALES
-LA BIOLOGÍA ESTÁ LLENA DE ESTOS EJEMPLOS
-LAS ESTRATEGIAS SON HEREDADAS
-SE COGE UN MUESTREO ALEATORIO DE UNA POBLACIÓN
-RESULTADOS: CAPACIDAD REPRODUCTIVA [FITNESS]
-{HALCONES Y PALOMAS} */
