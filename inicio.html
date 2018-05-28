@@ -54,18 +54,24 @@
             <h2>Instrucciones</h2>
             <br>
             <p>
-                1. Ingresar el número de filas y columnas de su matriz, posteriormente darle click en "Generar" para crear la tabla. ¡Para
-                estrategias mixtas y evolutivas, la matriz debe ser cuadrada!
+                1. Ingresar el número de filas y columnas de su matriz, posteriormente darle click en "Generar" para crear la matriz del
+                juego. ¡Se recomienda una matriz cuadrada!, ya que la mayoría de los métodos de solución solo funcionan con
+                este tipo de matriz.
             </p>
             <br>
             <p>
                 2. Ingresar los nombres de las estrategias de los jugadores en los casilleros de color
-                <span id="verde">verde</span> de la tabla. Estas ya poseen un nombre por defecto (A1,A2, etc).
+                <span id="verde">verde</span> de la tabla.
+                <br> La primera columna de la matriz generada representa las estrategias que el "Jugador 1" puede realizar, mientras
+                que la primera fila de la matriz representa las estrategias que el "Jugador 2" puede relizar. Notará que
+                estas ya poseen un nombre por defecto (A1,A2, etc). Y las intersecciones de dichas estrategias representan
+                todas las posibilidades del juego.
             </p>
             <br>
             <p>
-                3. Ingresar las estrategias de cada uno de los jugadores, se ha cololado un botón que sirve para llenar automáticamente estos
-                casilleros con valores aleatorios desde el 0 hasta el 10.
+                3. Ingresar las reglas de juego, cada componente de estas reglas debe estar separado por una coma, se ha cololado un botón
+                "Generar valores Random" que sirve para llenar automáticamente estos casilleros con valores aleatorios desde
+                el 0 hasta el 10.
             </p>
             <br>
             <p>
@@ -73,8 +79,8 @@
             </p>
             <br>
             <p>
-                5. Se mostrará la solución del juego, si existe, dependiendo del método seleccionado. En caso de que no exista una solución,
-                se dejará indicado.
+                5. Se mostrará la solución del juego, si existe, dependiendo del método de solución seleccionado. En caso de que no exista
+                una solución, se dejará indicado.
             </p>
         </div>
     </div>
