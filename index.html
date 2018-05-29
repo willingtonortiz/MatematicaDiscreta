@@ -1,34 +1,112 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Teoría de Juegos</title>
-    <link rel="stylesheet" href="css/estilos.css">
+    <title>Teoria de Juegos</title>
+    <link rel="stylesheet" href="css/inicio.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+        crossorigin="anonymous">
 </head>
 
-<body id="body">
-    <h1>TEORÍA DE JUEGOS</h1>
-    <div class="form">
-
-        <div class="input">
-            <input type="text" placeholder="filas" class="input-data" id="filas">
-            <div class="line"></div>
+<body>
+    <div class="container">
+        <img src="./img/upc_logo.png" alt="">
+        <div class="header-info">
+            <h1>Teoria de juegos</h1>
+            <p>
+                "Tomar las desiciones que más convengan para ganar, teniendo que cumplir las reglas del juego, y sabiendo que los demás jugadores
+                también influyen en los resultados con sus decisiones."
+            </p>
+            <a id="entrar" href="TeoriaDeJuegos.html">Entrar</a>
         </div>
-        <div class="input">
-            <input type="text" class="input-data" placeholder="columnas" id="columnas">
-            <div class="line"></div>
-        </div>
-        <button id="Generar">Generar</button>
+        <ul class="lista">
+            <li class="item-link">Profesor</li>
+            <li class="item-link">Instrucciones</li>
+            <li class="item-link">Desarrolladores</li>
+        </ul>
+        <p>&COPY; Todos los derechos reservados</p>
     </div>
 
-    <div id="principal"></div>
+    <div class="Profesor">
+        <i class="fas fa-times icon-close"></i>
+        <div class="perfil-profesor">
+            <div class="circle"></div>
+            <div class="info-profesor">
+                <h2>Antonio Marcos Medina Martinez</h2>
+                <!-- <p>
+                    DOCENTE CONTRATADO. DOCENTE TIEMPO COMPLETO DE LA UNIVERSIDAD PERUANA DE CIENCIAS APLICADAS. DOCTOR EN EDUCACIÓN DE LA UNIVERSIDAD
+                    INCA GARCILASO DE LA VEGA (PERÚ). MAESTRO EN INVESTIGACIÓN Y DOCENCIA UNIVERSITARIA DE LA UNIVERSIDAD
+                    INCA GARCILASO DE LA VEGA (PERÚ). LICENCIADO EN EDUCACIÓN SECUNDARIA ESPECIALIDAD MATEMÁTICA Y FÍSISCA
+                    DE LA UNIVERSIDAD INCA GARCILASO DE LA VEGA (PERÚ). BACHILLER EN EDUCACIÓN DE LA UNIVERSIDAD INCA GARCILASO
+                    DE LA VEGA (PERÚ). CON TRAYECTORIA PROFESIONAL COMO DOCENTE DE EDUCACIÓN SUPERIOR UNIVERSITARIA A PARTIR
+                    DEL AÑO 2009 EN LA UNIVERSIDAD PERUANA DE CIENCIAS APLICADAS.
+                </p> -->
+                <p> Docente Contratado</p>
+                <br>
+                <p> Docente tiempo completo de la  Universidad Peruana De Ciencias Aplicadas.</p><br>
+                <p> Doctor en educación de la Universidad Inca Garcilaso de la Vega (Perú).</p><br>
+                <p> Maestro en investigación y docencia Universidad de la Universidad Inca Garcilaso de la Vega (Perú).</p><br>
+                <p> Licenciado en educación secundaria especializado Matémitca Y Física de la Universidad Inca Garcilaso de la Vega (Perú).</p><br>
+                <p> Bachiller en educación de la Universidad Inca Garcilaso de la Vega (Perú).</p>
+                <br>
+                <p> Con trayectoría profesional como Docente de Educación Superior Universitaria a partir del año 2009 en la Universidad Peruana de Ciencias Aplicadas.</p>
+                    
+            </div>
+        </div>
+    </div>
 
-    <div id="soluciones"></div>
+    <div class="Instrucciones">
+        <i class="fas fa-times icon-close"></i>
+        <div class="info-instrucciones">
+            <h2>Instrucciones</h2>
+            <br>
+            <p>
+                1. Ingresar el número de filas y columnas de su matriz, posteriormente darle click en "Generar" para crear la matriz del
+                juego. ¡Se recomienda una matriz cuadrada!, ya que la mayoría de los métodos de solución solo funcionan con
+                este tipo de matriz.
+            </p>
+            <br>
+            <p>
+                2. Ingresar los nombres de las estrategias de los jugadores en los casilleros de color
+                <span id="verde">verde</span> de la tabla.
+                <br> La primera columna de la matriz generada representa las estrategias que el "Jugador 1" puede realizar, mientras
+                que la primera fila de la matriz representa las estrategias que el "Jugador 2" puede relizar. Notará que
+                estas ya poseen un nombre por defecto (A1,A2, etc). Y las intersecciones de dichas estrategias representan
+                todas las posibilidades del juego.
+            </p>
+            <br>
+            <p>
+                3. Ingresar las reglas de juego, cada componente de estas reglas debe estar separado por una coma, se ha cololado un botón
+                "Generar valores Random" que sirve para llenar automáticamente estos casilleros con valores aleatorios desde
+                el 0 hasta el 10.
+            </p>
+            <br>
+            <p>
+                4. Elegir un método para la resolución del problema, puede seleccionar más de uno.
+            </p>
+            <br>
+            <p>
+                5. Se mostrará la solución del juego, si existe, dependiendo del método de solución seleccionado. En caso de que no exista
+                una solución, se dejará indicado.
+            </p>
+        </div>
+    </div>
 
-    <script src="javascript/app.js"></script>
+    <div class="Desarrolladores">
+        <i class="fas fa-times icon-close"></i>
+        <div class="info-desarrolladores">
+            <h2>DESARROLLADORES</h2>
+            <p>Willington Jesus Ortiz Maurtua (u20161c963)</p>
+            <p>Diego Alonso Castillo Guersi (u201716002)</p>
+            <p>Jair Orlando Huaman Bellido (u201413797)</p>
+        </div>
+    </div>
+
+    <script src="javascript/scriptInicio.js"></script>
 </body>
 
 </html>

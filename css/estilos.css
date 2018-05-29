@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Inconsolata');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Oswald');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans');
+
 * {
     margin: 0;
     padding: 0;
@@ -13,7 +16,7 @@
 
 body {
     width: 100%;
-    background: linear-gradient( 45deg, #fff #eee), url('../img/im2.jpg') no-repeat;
+    background: linear-gradient( 45deg, #fff, #eee), url('../img/im2.jpg') no-repeat;
     background-attachment: fixed;
     background-size: cover;
     background-position: center center;
@@ -23,11 +26,13 @@ body {
 h1 {
     width: 100%;
     margin: 20px 0;
-    font-family: 'Inconsolata', monospace;
+    /* font-family: 'Inconsolata', monospace; */
+    font-family: 'IBM Plex Mono', monospace;
+
     text-align: center;
     background: linear-gradient(#112, #349af5);
     background-clip: text;
-    color: transparent;
+    color: #f44;
     -webkit-background-clip: text;
     -moz-bac-webkit-background-clip: text;
     -ms-bac-webkit-background-clip: text;
@@ -57,14 +62,11 @@ table {
     transition: all .3s;
 }
 
-table:hover {
-    box-shadow: 0 0 10px 5px darkgray;
-}
 
 table,
 th,
 td {
-    border: 3px solid #3fa;
+    border: 1px solid #555;
 }
 
 table tr th,
@@ -101,6 +103,7 @@ table tr td:nth-child(1) {
     text-align: center;
     position: relative;
     border-radius: 5px;
+
 }
 
 .celda {
@@ -114,12 +117,13 @@ table tr td:nth-child(1) {
 }
 
 .selected {
+    color: #fff;
     transition: all .41s ease-in-out;
-    text-shadow: 0 0 5px #fff;
+    background: rgba(203,203,203,.05);
 }
 
 .unselected {
-    color: #888;
+    color: #666;
     transition: all .41s ease-in-out;
 }
 
@@ -155,7 +159,7 @@ table tr td:nth-child(1) {
     transition: all .5s ease-in-out;
     width: 0%;
     height: 2px;
-    background: #34f;
+    background: #f44;
 }
 
 .form {
@@ -222,13 +226,6 @@ button:active {
     color: #3d5;
 }
 
-#Generar:hover,
-#btn-random:hover,
-#btn-Nash-dominadas:hover,
-#btn-Nash-Pura:hover,
-#btn-Nash-Mixta:hover {
-    box-shadow: 0 0 5px 3px darkgray;
-}
 
 /* SOLUCIONES [EQUILIBRIO DE NASH] */
 #soluciones {
@@ -243,10 +240,7 @@ button:active {
     transition: all .3s;
 }
 
-#soluciones:hover {
-    box-shadow: 0 0 10px 5px darkgray;
-    cursor: pointer;
-}
+
 
 #soluciones h2,
 #soluciones p {
@@ -260,3 +254,30 @@ button:active {
     width: 65%;
     transition: all .3s;
 }
+
+    /*==========  Non-Mobile First Method  ==========*/
+
+    /* Large Devices, Wide Screens */
+    @media only screen and (max-width : 1200px) {
+        
+    }
+
+    /* Medium Devices, Desktops */
+    @media only screen and (max-width : 992px) {
+
+    }
+
+    /* Small Devices, Tablets */
+    @media only screen and (max-width : 768px) {
+
+    }
+
+    /* Extra Small Devices, Phones */ 
+    @media only screen and (max-width : 480px) {
+
+    }
+
+    /* Custom, iPhone Retina */ 
+    @media only screen and (max-width : 320px) {
+
+    }

@@ -547,7 +547,7 @@ document.getElementById('Generar').addEventListener('click', e => {
             solucion += "}";
 
             if (solucion !== 'Equilibrio de Nash en "Estrategias Puras" =}') {
-                estrategiasPuras.appendChild(crearContenedorTexto('h2', 'Estratagias Puras'));
+                estrategiasPuras.appendChild(crearContenedorTexto('h2', 'Estrategias Puras'));
                 estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 1: Se busca los mayores elementos "Y" de cada fila'));
                 estrategiasPuras.appendChild(crearContenedorTexto('p', marcasFila));
                 estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 2: Se busca los mayores elementos "X" de cada columna'));;
