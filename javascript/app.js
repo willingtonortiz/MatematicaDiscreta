@@ -330,8 +330,9 @@ function crearBotones(contenedorPrincipal) {
     contenedorPrincipal.appendChild(buttonContenedor);
 }
 
-function crearContenedorTexto(tipo, texto) {
+function crearContenedorTexto(tipo, texto, clase) {
     let contenedor = document.createElement(tipo);
+    if(clase !== undefined) contenedor.setAttribute('class', clase);
     contenedor.innerText = texto;
     return contenedor;
 }
@@ -463,7 +464,7 @@ document.getElementById('Generar').addEventListener('click', e => {
                     let tablaTemp = crearTabla(elementos.length, elementos[0].length, elementos, nombresCabeceras);
                     tablaTemp.setAttribute('class', 'tablaDominada');
                     let texto = 'Paso ' + paso + ': Se elimina ' + ((turno) ? 'la columna' : 'la fila') + ' dominada ' + nombreEliminado;
-                    contenedorDominadas.appendChild(crearContenedorTexto('p', texto))
+                    contenedorDominadas.appendChild(crearContenedorTexto('p', texto, 'textoIzquierda'))
                     contenedorDominadas.appendChild(tablaTemp);
                 }
             } while (existeEliminacion);
@@ -548,11 +549,11 @@ document.getElementById('Generar').addEventListener('click', e => {
 
             if (solucion !== 'Equilibrio de Nash en "Estrategias Puras" =}') {
                 estrategiasPuras.appendChild(crearContenedorTexto('h2', 'Estrategias Puras'));
-                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 1: Se busca los mayores elementos "Y" de cada fila'));
+                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 1: Se busca los mayores elementos "Y" de cada fila', 'textoIzquierda'));
                 estrategiasPuras.appendChild(crearContenedorTexto('p', marcasFila));
-                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 2: Se busca los mayores elementos "X" de cada columna'));;
+                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 2: Se busca los mayores elementos "X" de cada columna', 'textoIzquierda'));;
                 estrategiasPuras.appendChild(crearContenedorTexto('p', marcasColumna));
-                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 3: Se seleccionan los elementos que cumplan con la condición de ser los mayores de su fila y columna'));;
+                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 3: Se seleccionan los elementos que cumplan con la condición de ser los mayores de su fila y columna', 'textoIzquierda'));;
                 estrategiasPuras.appendChild(crearContenedorTexto('p', marcasRespuesta));
                 estrategiasPuras.appendChild(crearContenedorTexto('p', solucion));
             } else
