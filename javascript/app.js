@@ -483,20 +483,24 @@ document.getElementById('Generar').addEventListener('click', e => {
             estrategiasPuras.innerHTML = "";
             let elementos = obtenerTabla(table);
 
+// console.log(elementos);
+
             // QUITAR LOS ESTILOS A LA SOLUCIÓN ANTERIOR
             estilosInputs.quitarLosEstilos();
 
             // Buscamos el mayor valor por filas de "B", es decir, el mayor "y" de cada fila
             let marcasFila = "Elementos encontrados: ";
             for (let i = 0; i < elementos.length; i++) {
-                let mayor = 0;
+                let mayor = elementos[i][0].y;
                 for (let j = 0; j < elementos[i].length; j++) {
                     mayor = Math.max(mayor, elementos[i][j].y);
                 }
+                // console.log(mayor);
                 for (let j = 0; j < elementos[i].length; j++) {
                     if (mayor === elementos[i][j].y) {
                         elementos[i][j].rptaY = true;
                         marcasFila += elementos[i][j].y + ", ";
+                        // console.log(elementos[i][j]);
                     }
                 }
             }
@@ -505,7 +509,7 @@ document.getElementById('Generar').addEventListener('click', e => {
             // Buscamos el mayor valor por columnas de "A", es decir, el mayor "x" de cada columna
             let marcasColumna = "Elementos encontrados: ";
             for (let j = 0; j < elementos[0].length; j++) {
-                let mayor = 0;
+                let mayor = elementos[0][j].x;
                 for (let i = 0; i < elementos.length; i++) {
                     mayor = Math.max(mayor, elementos[i][j].x);
                 }
