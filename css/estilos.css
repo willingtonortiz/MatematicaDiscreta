@@ -251,6 +251,98 @@ button:active {
     width: 65%;
     transition: all .3s;
 }
+.button-ejemplos{
+    width: 60px;
+    height: 60px;
+    position: fixed;
+    top: 90%;
+    left: 95%;
+    transform: translate(-90%,-95%);
+    background: #fff;
+    display: flex;
+    text-align: center;
+    padding: 20px 0;
+    color: #f33;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    transition: all .1s ease-in-out;
+    cursor: pointer;
+    
+}   
+
+.btn-ejemplos-active{
+    background: #3f5;
+    color: white;
+}
+.button-ejemplos p{
+    color: unset;
+}
+.Ejemplos{
+    position: fixed;
+    top: 15%;
+    left: 2%;
+    transform: translate(-2%,-15%);
+    display: flex;
+    flex-flow: column nowrap;
+    z-index: -1;
+    opacity: 0;
+    transition: all .2s ease-in-out;
+
+}
+.Ejemplo-active{
+    z-index: 1;
+    opacity: 1;
+}    
+.Ejemplos .ejm img{
+    max-width: 30px;
+}
+.ejm{
+    margin: 10px 0;
+}
+.ejm p{
+    margin-left: 10px;
+}
+.dilema-prisionero{
+    width: 250px;
+    position: relative;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background: #ff5757;
+    border-radius: 100px;
+    padding: 15px;
+    transition: all .2s ease-in-out;
+    cursor: pointer;   
+}
+.batalla-de-sexos{
+    width: 220px;
+    position: relative;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background: #4373fe;
+    border-radius: 100px;
+    padding: 15px;
+    transition: all .2s ease-in-out;
+    cursor: pointer; 
+}
+.piedra-papel-tijera{
+    width: 250px;
+    position: relative;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background: #ffee43;
+    border-radius: 100px;
+    padding: 15px;
+    transition: all .2s ease-in-out;
+    cursor: pointer; 
+}
+
 
 /*==========  Non-Mobile First Method  ==========*/
 
