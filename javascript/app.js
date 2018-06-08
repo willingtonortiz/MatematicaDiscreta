@@ -156,7 +156,7 @@ function llenarTabla(elementos) {
 function generarRandoms(filas, columnas) {
     // Se crea una matriz con los datos
     // Primero se crea el arreglo de columnas
-    var elementos = [];
+    let elementos = [];
     for (let i = 0; i < filas; ++i) {
         // Luego se crea el arreglo para cada columna
         elementos[i] = [];
@@ -332,9 +332,300 @@ function crearBotones(contenedorPrincipal) {
 
 function crearContenedorTexto(tipo, texto, clase) {
     let contenedor = document.createElement(tipo);
-    if(clase !== undefined) contenedor.setAttribute('class', clase);
+    if (clase !== undefined) contenedor.setAttribute('class', clase);
     contenedor.innerText = texto;
     return contenedor;
+}
+
+
+// Función para modificar los nombres de las cabeceras
+let modificarCabeceras = (Cabeceras, filas, columnas) => {
+    let cabeceras = document.getElementsByClassName('cabecera');
+
+    for (let i = 0; i < columnas; i++) {
+        cabeceras[i].value = Cabeceras[1][i];
+    }
+    for (let i = 0; i < filas; i++) {
+        cabeceras[i + columnas].value = Cabeceras[0][i];
+    }
+}
+
+// Función para crear los ejemplos
+let crearEjemplos = (Filas, Columnas, Elementos, Cabeceras) => {
+    // DECLARACIÓN Y DEFINICIÓN DE VARIABLES
+    document.getElementById('soluciones').innerHTML = "";
+    document.getElementById('principal').innerHTML = "";
+    let contenedorPrincipal = document.getElementById('principal');
+    let filas = Filas;
+    let columnas = Columnas;
+
+    /* SE GENERAN LOS BOTONES */
+    crearBotones(contenedorPrincipal);
+
+    /* SE CREA LA TABLA CON LOS INPUTS */
+    let table = document.createElement('table');
+    table.setAttribute('id', 'miTabla');
+    crearTablaInputs(table, filas, columnas); // AGREGANDO INPUTS
+    contenedorPrincipal.appendChild(table);
+    table.addEventListener('keypress', (e) => {
+        estilosInputs.quitarLosEstilos();
+    }); // SI SE PRESIONA UN BOTÓN EN CUALQUIER INPUT, SE QUITAN LOS ESTILOS
+
+    let elementos = Elementos;
+    modificarCabeceras(Cabeceras, filas, columnas);
+
+    // LLENADO DE LOS INPUTS DE LA TABLA
+    llenarTabla(elementos, filas, columnas);
+    estilosInputs.quitarLosEstilos();
+
+    // LLAMADA AL EVENTO BOTÓN RANDOM
+    document.querySelector('#btn-random').addEventListener('click', () => {
+        botonRandom(filas, columnas, estilosInputs);
+    });
+
+    // LLAMADA AL EVENTO BOTÓN DOMINADAS
+    document.querySelector('#btn-Nash-dominadas').addEventListener('click', () => {
+        botonDominadas(table, filas, columnas)
+    });
+
+    // LLAMADA AL EVENTO BOTÓN PURAS
+    document.querySelector('#btn-Nash-Pura').addEventListener('click', () => {
+        botonPuras(table, columnas, estilosInputs);
+    });
+
+    // LLAMADA AL EVENTO BOTÓN MIXTAS
+    document.querySelector('#btn-Nash-Mixta').addEventListener('click', () => {
+        botonMixtas(table, filas, columnas);
+    });
+}
+
+/* ===== GENERACIÓN DE VALORES RANDOM ===== */
+let botonRandom = (filas, columnas, estilosInputs) => {
+    // MATRIZ DE ELEMENTOS
+    let elementos = generarRandoms(filas, columnas);
+    // LLENADO DE LOS INPUTS DE LA TABLA
+    llenarTabla(elementos, filas, columnas);
+    // QUITAR ESTILOS ANTERIORES
+    estilosInputs.quitarLosEstilos();
+}
+
+/* ===== SOLUCIÓN EN ESTRATEGIAS DOMINADAS ===== */
+let botonDominadas = (tabla, filas, columnas) => {
+    // SE OBTIENE EL CONTENEDOR EN DONDE SE COLOCARÁN LAS TABLAS SIMPLIFICADAS
+    let contenedorDominadas = document.getElementById('soluciones');
+    contenedorDominadas.innerHTML = '';
+
+    // SE OBTIENEN LOS NOMBRES DE LAS CABECERAS
+    let nombresCabeceras = obtenerNombresCabeceras(filas, columnas);
+
+    //SE OBTIENEN LOS ELEMENTOS A PARTIR DE LA TABLA
+    let elementos = obtenerTabla(tabla);
+    let mayor, menor;
+    let existeEliminacion;
+    let turno = true;
+    let paso = 0;
+    let nombreEliminado = "";
+    do {
+        existeEliminacion = false;
+        if (turno) {
+            let eliminados;
+            // SE ANALIZA EN FILAS
+            for (let i = 0; i < elementos.length; i++) {
+                for (let j = i; j < elementos.length; j++) {
+                    mayor = 0;
+                    menor = 0;
+                    for (let k = 0; k < elementos[i].length; k++) {
+                        if (elementos[i][k].x > elementos[j][k].x) {
+                            mayor++;
+                        } else if (elementos[i][k].x < elementos[j][k].x) {
+                            menor++;
+                        }
+                    }
+                    if (mayor === elementos[0].length || menor === elementos[0].length) {
+                        existeEliminacion = true;
+                        if (mayor > menor) eliminados = j;
+                        else eliminados = i;
+                        break;
+                    }
+                }
+                if (existeEliminacion) break;
+            }
+            if (existeEliminacion) {
+                elementos.splice(eliminados, 1);
+                nombreEliminado = nombresCabeceras[1].splice(eliminados, 1);
+            }
+        } else {
+            let eliminados;
+            // SE ANALIZA EN COLUMNAS
+            for (let i = 0; i < elementos[0].length; i++) {
+                for (let j = i; j < elementos[0].length; j++) {
+                    mayor = 0;
+                    menor = 0;
+                    for (let k = 0; k < elementos.length; k++) {
+                        if (elementos[k][i].y > elementos[k][j].y) {
+                            mayor++;
+                        } else if (elementos[k][i].y < elementos[k][j].y) {
+                            menor++;
+                        }
+                    }
+                    if (mayor === elementos.length || menor === elementos.length) {
+                        existeEliminacion = true;
+                        if (mayor > menor) eliminados = j;
+                        else eliminados = i;
+                        break;
+                    }
+                }
+            }
+            if (existeEliminacion) {
+                for (let i = 0; i < elementos.length; i++) {
+                    elementos[i].splice(eliminados, 1);
+                }
+                nombreEliminado = nombresCabeceras[0].splice(eliminados, 1);
+            }
+        }
+        if (existeEliminacion) {
+            // SE INVIERTE EL TURNO DEL JUGADOR
+            paso++;
+            if (paso === 1) {
+                contenedorDominadas.appendChild(crearContenedorTexto('h2', 'Estrategias Dominadas'));
+            }
+            turno = !turno;
+            let tablaTemp = crearTabla(elementos.length, elementos[0].length, elementos, nombresCabeceras);
+            tablaTemp.setAttribute('class', 'tablaDominada');
+            let texto = 'Paso ' + paso + ': Se elimina ' + ((turno) ? 'la columna' : 'la fila') + ' dominada ' + nombreEliminado;
+            contenedorDominadas.appendChild(crearContenedorTexto('p', texto, 'textoIzquierda'))
+            contenedorDominadas.appendChild(tablaTemp);
+        }
+    } while (existeEliminacion);
+    if (paso === 0 || (nombresCabeceras[0].length !== 1 && nombresCabeceras[1].length !== 1)) {
+        contenedorDominadas.appendChild(crearContenedorTexto('h2', 'No hay solución en Estrategias Dominadas'));
+    } else {
+        let respuesta = 'Equilibrio de Nash en "Estrategias Dominadas" = {(' + nombresCabeceras[1][0] + ", " + nombresCabeceras[0][0] + ")}";
+        contenedorDominadas.appendChild(crearContenedorTexto('p', respuesta));
+    }
+}
+
+/* ===== SOLUCIÓN EN ESTRATEGIAS PURAS ===== */
+let botonPuras = (table, columnas, estilosInputs) => {
+    // DECLARACIÓN DE VARIABLES
+    let estrategiasPuras = document.getElementById('soluciones');
+    estrategiasPuras.innerHTML = "";
+    let elementos = obtenerTabla(table);
+
+    // QUITAR LOS ESTILOS A LA SOLUCIÓN ANTERIOR
+    estilosInputs.quitarLosEstilos();
+
+    // Buscamos el mayor valor por filas de "B", es decir, el mayor "y" de cada fila
+    let marcasFila = "Elementos encontrados: ";
+    for (let i = 0; i < elementos.length; i++) {
+        let mayor = elementos[i][0].y;
+        for (let j = 0; j < elementos[i].length; j++) {
+            mayor = Math.max(mayor, elementos[i][j].y);
+        }
+        // console.log(mayor);
+        for (let j = 0; j < elementos[i].length; j++) {
+            if (mayor === elementos[i][j].y) {
+                elementos[i][j].rptaY = true;
+                marcasFila += elementos[i][j].y + ", ";
+                // console.log(elementos[i][j]);
+            }
+        }
+    }
+    marcasFila = marcasFila.slice(0, -2);
+
+    // Buscamos el mayor valor por columnas de "A", es decir, el mayor "x" de cada columna
+    let marcasColumna = "Elementos encontrados: ";
+    for (let j = 0; j < elementos[0].length; j++) {
+        let mayor = elementos[0][j].x;
+        for (let i = 0; i < elementos.length; i++) {
+            mayor = Math.max(mayor, elementos[i][j].x);
+        }
+        for (let i = 0; i < elementos.length; i++) {
+            if (mayor === elementos[i][j].x) {
+                elementos[i][j].rptaX = true;
+                marcasColumna += elementos[i][j].x + ", ";
+            }
+        }
+    }
+    marcasColumna = marcasColumna.slice(0, -2);
+
+    // Mostramos la respuesta si existe
+    // Una respuesta existe si y solo si los elementos "X" e "Y" son los mayores en cada fila y columna a la vez
+    let nombresDesiciones = document.getElementsByClassName('cabecera');
+
+    // SE DECLARAN LOS CONTENEDORES DE LA SOLUCIÓN
+    let marcasRespuesta = "Elementos encontrados: "
+    let solucion = 'Equilibrio de Nash en "Estrategias Puras" = {';
+    for (let i = 0; i < elementos.length; i++) {
+        for (let j = 0; j < elementos[i].length; j++) {
+            // CONDICIÓN PARA QUE SEA UNA RESPUESTA
+            if (elementos[i][j].rptaX == true && elementos[i][j].rptaY == true) {
+                // MARCANDO LOS INPUTS QUE SON RESPUESTAS
+                estilosInputs.Seleccionados.push(i * elementos[i].length + j);
+
+                // ESTA PARTE DEL CÓDIGO, LA SOLUCIÓN TIENE EN SUS COMPONENTES EL NOMBRE DE LAS DESICIONES
+                solucion += "(" + nombresDesiciones[i + columnas].value + ", " + nombresDesiciones[j].value + "), ";
+
+                // SE SELECCIONAN LOS ELEMENTOS PARA MOSTRAR
+                marcasRespuesta += "(" + elementos[i][j].x + ", " + elementos[i][j].y + "), ";
+            } else {
+                // MARCANDO LOS INPUTS QUE NO SON RESPUESTAS
+                estilosInputs.NoSeleccionados.push(i * elementos[i].length + j);
+            }
+        }
+    }
+    marcasRespuesta = marcasRespuesta.slice(0, -2);
+    solucion = solucion.slice(0, -2);
+    solucion += "}";
+
+    if (solucion !== 'Equilibrio de Nash en "Estrategias Puras" =}') {
+        estrategiasPuras.appendChild(crearContenedorTexto('h2', 'Estrategias Puras'));
+        estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 1: Se busca los mayores elementos "Y" de cada fila', 'textoIzquierda'));
+        estrategiasPuras.appendChild(crearContenedorTexto('p', marcasFila));
+        estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 2: Se busca los mayores elementos "X" de cada columna', 'textoIzquierda'));;
+        estrategiasPuras.appendChild(crearContenedorTexto('p', marcasColumna));
+        estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 3: Se seleccionan los elementos que cumplan con la condición de ser los mayores de su fila y columna', 'textoIzquierda'));;
+        estrategiasPuras.appendChild(crearContenedorTexto('p', marcasRespuesta));
+        estrategiasPuras.appendChild(crearContenedorTexto('p', solucion));
+    } else
+        estrategiasPuras.appendChild(crearContenedorTexto('h2', "No hay solución en Estrategias Puras"));
+
+    // MARCAR LAS RESPUESTAS DE CON COLORES NEÓN
+    estilosInputs.marcarRespuestas();
+}
+
+/* ===== SOLUCIÓN EN ESTRATEGIAS MIXTAS ===== */
+let botonMixtas = (table, filas, columnas) => {
+    // DECLARACIÓN DE VARIABLES
+    let estrategiasMixtas = document.getElementById('soluciones')
+    estrategiasMixtas.innerHTML = "";
+
+    let elementos = obtenerTabla(table);
+    let matrizJ1 = generarMatrizJugador(elementos, 'J1');
+    let matrizJ2 = generarMatrizJugador(elementos, 'J2');
+
+    let probJ1 = eliminacionGausianaPro(matrizJ1[0], matrizJ1[1]);
+    let probJ2 = eliminacionGausianaPro(matrizJ2[0], matrizJ2[1]);
+
+    let nombres = obtenerNombresCabeceras(filas, columnas);
+
+    estrategiasMixtas.appendChild(crearContenedorTexto('h2', 'Estrategias Mixtas'));
+
+    let solucion = 'Equilibrio de Nash en "Estrategias Mixtas" = {';
+    for (let i = 0; i < probJ2.length - 1; i++) {
+        solucion += probJ2[i] + " * " + nombres[1][i] + " + ";
+    }
+    solucion = solucion.slice(0, -3);
+    solucion += ", ";
+
+    for (let i = 0; i < probJ2.length - 1; i++) {
+        solucion += probJ1[i] + " * " + nombres[0][i] + " + ";
+    }
+    solucion = solucion.slice(0, -3);
+
+    solucion += "}";
+
+    estrategiasMixtas.appendChild(crearContenedorTexto('p', solucion));
 }
 
 // CUERPO DEL PROGRAMA
@@ -370,243 +661,140 @@ document.getElementById('Generar').addEventListener('click', e => {
 
         // LLAMADA AL EVENTO BOTÓN RANDOM
         document.querySelector('#btn-random').addEventListener('click', () => {
-            // MATRIZ DE ELEMENTOS
-            let elementos = generarRandoms(filas, columnas);
-
-            // LLENADO DE LOS INPUTS DE LA TABLA
-            llenarTabla(elementos, filas, columnas);
-
-            // QUITAR ESTILOS ANTERIORES
-            estilosInputs.quitarLosEstilos();
+            botonRandom(filas, columnas, estilosInputs);
         });
 
-        /* ===== SOLUCIÓN EN ESTRATEGIAS DOMINADAS ===== */
+        // LLAMADA AL EVENTO BOTÓN DOMINADAS
         document.querySelector('#btn-Nash-dominadas').addEventListener('click', () => {
-            // SE OBTIENE EL CONTENEDOR EN DONDE SE COLOCARÁN LAS TABLAS SIMPLIFICADAS
-            let contenedorDominadas = document.getElementById('soluciones');
-            contenedorDominadas.innerHTML = '';
-
-            // SE OBTIENEN LOS NOMBRES DE LAS CABECERAS
-            let nombresCabeceras = obtenerNombresCabeceras(filas, columnas);
-
-            //SE OBTIENEN LOS ELEMENTOS A PARTIR DE LA TABLA
-            let elementos = obtenerTabla(table);
-            let mayor, menor;
-            let existeEliminacion;
-            let turno = true;
-            let paso = 0;
-            let nombreEliminado = "";
-            do {
-                existeEliminacion = false;
-                if (turno) {
-                    let eliminados;
-                    // SE ANALIZA EN FILAS
-                    for (let i = 0; i < elementos.length; i++) {
-                        for (let j = i; j < elementos.length; j++) {
-                            mayor = 0;
-                            menor = 0;
-                            for (let k = 0; k < elementos[i].length; k++) {
-                                if (elementos[i][k].x > elementos[j][k].x) {
-                                    mayor++;
-                                } else if (elementos[i][k].x < elementos[j][k].x) {
-                                    menor++;
-                                }
-                            }
-                            if (mayor === elementos[0].length || menor === elementos[0].length) {
-                                existeEliminacion = true;
-                                if (mayor > menor) eliminados = j;
-                                else eliminados = i;
-                                break;
-                            }
-                        }
-                        if (existeEliminacion) break;
-                    }
-                    if (existeEliminacion) {
-                        elementos.splice(eliminados, 1);
-                        nombreEliminado = nombresCabeceras[1].splice(eliminados, 1);
-                    }
-                } else {
-                    let eliminados;
-                    // SE ANALIZA EN COLUMNAS
-                    for (let i = 0; i < elementos[0].length; i++) {
-                        for (let j = i; j < elementos[0].length; j++) {
-                            mayor = 0;
-                            menor = 0;
-                            for (let k = 0; k < elementos.length; k++) {
-                                if (elementos[k][i].y > elementos[k][j].y) {
-                                    mayor++;
-                                } else if (elementos[k][i].y < elementos[k][j].y) {
-                                    menor++;
-                                }
-                            }
-                            if (mayor === elementos.length || menor === elementos.length) {
-                                existeEliminacion = true;
-                                if (mayor > menor) eliminados = j;
-                                else eliminados = i;
-                                break;
-                            }
-                        }
-                    }
-                    if (existeEliminacion) {
-                        for (let i = 0; i < elementos.length; i++) {
-                            elementos[i].splice(eliminados, 1);
-                        }
-                        nombreEliminado = nombresCabeceras[0].splice(eliminados, 1);
-                    }
-                }
-                if (existeEliminacion) {
-                    // SE INVIERTE EL TURNO DEL JUGADOR
-                    paso++;
-                    if (paso === 1) {
-                        contenedorDominadas.appendChild(crearContenedorTexto('h2', 'Estrategias Dominadas'));
-                    }
-                    turno = !turno;
-                    let tablaTemp = crearTabla(elementos.length, elementos[0].length, elementos, nombresCabeceras);
-                    tablaTemp.setAttribute('class', 'tablaDominada');
-                    let texto = 'Paso ' + paso + ': Se elimina ' + ((turno) ? 'la columna' : 'la fila') + ' dominada ' + nombreEliminado;
-                    contenedorDominadas.appendChild(crearContenedorTexto('p', texto, 'textoIzquierda'))
-                    contenedorDominadas.appendChild(tablaTemp);
-                }
-            } while (existeEliminacion);
-            if (paso === 0 || (nombresCabeceras[0].length !== 1 && nombresCabeceras[1].length !== 1)) {
-                contenedorDominadas.appendChild(crearContenedorTexto('h2', 'No hay solución en Estrategias Dominadas'));
-            } else {
-                let respuesta = 'Equilibrio de Nash en "Estrategias Dominadas" = {(' + nombresCabeceras[1][0] + ", " + nombresCabeceras[0][0] + ")}";
-                contenedorDominadas.appendChild(crearContenedorTexto('p', respuesta));
-            }
+            botonDominadas(table, filas, columnas)
         });
 
-        /* ===== SOLUCIÓN EN ESTRATEGIAS PURAS ===== */
+        // LLAMADA AL EVENTO BOTÓN PURAS
         document.querySelector('#btn-Nash-Pura').addEventListener('click', () => {
-            // DECLARACIÓN DE VARIABLES
-            let estrategiasPuras = document.getElementById('soluciones');
-            estrategiasPuras.innerHTML = "";
-            let elementos = obtenerTabla(table);
-
-// console.log(elementos);
-
-            // QUITAR LOS ESTILOS A LA SOLUCIÓN ANTERIOR
-            estilosInputs.quitarLosEstilos();
-
-            // Buscamos el mayor valor por filas de "B", es decir, el mayor "y" de cada fila
-            let marcasFila = "Elementos encontrados: ";
-            for (let i = 0; i < elementos.length; i++) {
-                let mayor = elementos[i][0].y;
-                for (let j = 0; j < elementos[i].length; j++) {
-                    mayor = Math.max(mayor, elementos[i][j].y);
-                }
-                // console.log(mayor);
-                for (let j = 0; j < elementos[i].length; j++) {
-                    if (mayor === elementos[i][j].y) {
-                        elementos[i][j].rptaY = true;
-                        marcasFila += elementos[i][j].y + ", ";
-                        // console.log(elementos[i][j]);
-                    }
-                }
-            }
-            marcasFila = marcasFila.slice(0, -2);
-
-            // Buscamos el mayor valor por columnas de "A", es decir, el mayor "x" de cada columna
-            let marcasColumna = "Elementos encontrados: ";
-            for (let j = 0; j < elementos[0].length; j++) {
-                let mayor = elementos[0][j].x;
-                for (let i = 0; i < elementos.length; i++) {
-                    mayor = Math.max(mayor, elementos[i][j].x);
-                }
-                for (let i = 0; i < elementos.length; i++) {
-                    if (mayor === elementos[i][j].x) {
-                        elementos[i][j].rptaX = true;
-                        marcasColumna += elementos[i][j].x + ", ";
-                    }
-                }
-            }
-            marcasColumna = marcasColumna.slice(0, -2);
-
-            // Mostramos la respuesta si existe
-            // Una respuesta existe si y solo si los elementos "X" e "Y" son los mayores en cada fila y columna a la vez
-            let nombresDesiciones = document.getElementsByClassName('cabecera');
-
-            // SE DECLARAN LOS CONTENEDORES DE LA SOLUCIÓN
-            let marcasRespuesta = "Elementos encontrados: "
-            let solucion = 'Equilibrio de Nash en "Estrategias Puras" = {';
-            for (let i = 0; i < elementos.length; i++) {
-                for (let j = 0; j < elementos[i].length; j++) {
-                    // CONDICIÓN PARA QUE SEA UNA RESPUESTA
-                    if (elementos[i][j].rptaX == true && elementos[i][j].rptaY == true) {
-                        // MARCANDO LOS INPUTS QUE SON RESPUESTAS
-                        estilosInputs.Seleccionados.push(i * elementos[i].length + j);
-
-                        // ESTA PARTE DEL CÓDIGO, LA SOLUCIÓN TIENE EN SUS COMPONENTES EL NOMBRE DE LAS DESICIONES
-                        solucion += "(" + nombresDesiciones[i + columnas].value + ", " + nombresDesiciones[j].value + "), ";
-
-                        // SE SELECCIONAN LOS ELEMENTOS PARA MOSTRAR
-                        marcasRespuesta += "(" + elementos[i][j].x + ", " + elementos[i][j].y + "), ";
-                    } else {
-                        // MARCANDO LOS INPUTS QUE NO SON RESPUESTAS
-                        estilosInputs.NoSeleccionados.push(i * elementos[i].length + j);
-                    }
-                }
-            }
-            marcasRespuesta = marcasRespuesta.slice(0, -2);
-            solucion = solucion.slice(0, -2);
-            solucion += "}";
-
-            if (solucion !== 'Equilibrio de Nash en "Estrategias Puras" =}') {
-                estrategiasPuras.appendChild(crearContenedorTexto('h2', 'Estrategias Puras'));
-                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 1: Se busca los mayores elementos "Y" de cada fila', 'textoIzquierda'));
-                estrategiasPuras.appendChild(crearContenedorTexto('p', marcasFila));
-                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 2: Se busca los mayores elementos "X" de cada columna', 'textoIzquierda'));;
-                estrategiasPuras.appendChild(crearContenedorTexto('p', marcasColumna));
-                estrategiasPuras.appendChild(crearContenedorTexto('p', 'Paso 3: Se seleccionan los elementos que cumplan con la condición de ser los mayores de su fila y columna', 'textoIzquierda'));;
-                estrategiasPuras.appendChild(crearContenedorTexto('p', marcasRespuesta));
-                estrategiasPuras.appendChild(crearContenedorTexto('p', solucion));
-            } else
-                estrategiasPuras.appendChild(crearContenedorTexto('h2', "No hay solución en Estrategias Puras"));
-
-            // MARCAR LAS RESPUESTAS DE CON COLORES NEÓN
-            estilosInputs.marcarRespuestas();
+            botonPuras(table, columnas, estilosInputs);
         });
 
-        /* ===== SOLUCIÓN EN ESTRATEGIAS MIXTAS ===== */
+        // LLAMADA AL EVENTO BOTÓN MIXTAS
         document.querySelector('#btn-Nash-Mixta').addEventListener('click', () => {
-            // DECLARACIÓN DE VARIABLES
-            let estrategiasMixtas = document.getElementById('soluciones')
-            estrategiasMixtas.innerHTML = "";
-
-            let elementos = obtenerTabla(table);
-            let matrizJ1 = generarMatrizJugador(elementos, 'J1');
-            let matrizJ2 = generarMatrizJugador(elementos, 'J2');
-
-            let probJ1 = eliminacionGausianaPro(matrizJ1[0], matrizJ1[1]);
-            let probJ2 = eliminacionGausianaPro(matrizJ2[0], matrizJ2[1]);
-
-            let nombres = obtenerNombresCabeceras(filas, columnas);
-
-            estrategiasMixtas.appendChild(crearContenedorTexto('h2', 'Estrategias Mixtas'));
-
-            let solucion = 'Equilibrio de Nash en "Estrategias Mixtas" = {';
-            for (let i = 0; i < probJ2.length - 1; i++) {
-                solucion += probJ2[i] + " * " + nombres[1][i] + " + ";
-            }
-            solucion = solucion.slice(0, -3);
-            solucion += ", ";
-
-            for (let i = 0; i < probJ2.length - 1; i++) {
-                solucion += probJ1[i] + " * " + nombres[0][i] + " + ";
-            }
-            solucion = solucion.slice(0, -3);
-
-            solucion += "}";
-
-            estrategiasMixtas.appendChild(crearContenedorTexto('p', solucion));
+            botonMixtas(table, filas, columnas);
         });
+
     }
 });
-var buttonEvent = document.getElementsByClassName('button-ejemplos')[0] || document.getElementsByClassName('fa-bars')[0];
-    buttonEvent.addEventListener('click',e=>{
-        
-        e.target.classList.toggle('btn-ejemplos-active');
-        document.getElementsByClassName('modal-Ejemplos')[0].classList.toggle('Ejemplo-active');
-    
 
-    })
+// Botón para el panel sobre la pantalla
+document.getElementsByClassName('button-ejemplos')[0].addEventListener('click', () => {
+    document.getElementsByClassName('button-ejemplos')[0].classList.toggle('btn-ejemplos-active');
+    document.getElementsByClassName('modal-Ejemplos')[0].classList.toggle('Ejemplo-active')
+})
+
+/* ===== EJEMPLO DILEMA DEL PRISIONERO ===== */
+document.getElementById('dilemaPrisionero').addEventListener('click', () => {
+    let elementos = [];
+    for (let i = 0; i < 2; ++i) {
+        elementos[i] = [];
+    }
+    elementos[0][0] = new CElemento(-10, -10);
+    elementos[0][1] = new CElemento(0, -15);
+    elementos[1][0] = new CElemento(-15, 0);
+    elementos[1][1] = new CElemento(-4, -4);
+
+    let Cabeceras = [];
+    for (let i = 0; i < 2; ++i) {
+        Cabeceras[i] = [];
+    }
+    Cabeceras[1][0] = 'Confesar';
+    Cabeceras[1][1] = 'Callar';
+    Cabeceras[0][0] = 'Confesar';
+    Cabeceras[0][1] = 'Callar';
+
+    document.getElementsByClassName('button-ejemplos')[0].classList.toggle('btn-ejemplos-active');
+    document.getElementsByClassName('modal-Ejemplos')[0].classList.toggle('Ejemplo-active')
+
+    crearEjemplos(2, 2, elementos, Cabeceras);
+});
+
+/* ===== EJEMPLO BATALLA DE SEXOS ===== */
+document.getElementById('batallaSexos').addEventListener('click', () => {
+    let elementos = [];
+    for (let i = 0; i < 2; ++i) {
+        elementos[i] = [];
+    }
+    elementos[0][0] = new CElemento(6, 2);
+    elementos[0][1] = new CElemento(0, 0);
+    elementos[1][0] = new CElemento(0, 0);
+    elementos[1][1] = new CElemento(2, 6);
+
+    let Cabeceras = [];
+    for (let i = 0; i < 2; ++i) {
+        Cabeceras[i] = [];
+    }
+    Cabeceras[1][0] = 'Boxeo';
+    Cabeceras[1][1] = 'Teatro';
+    Cabeceras[0][0] = 'Boxeo';
+    Cabeceras[0][1] = 'Teatro';
+
+    document.getElementsByClassName('button-ejemplos')[0].classList.toggle('btn-ejemplos-active');
+    document.getElementsByClassName('modal-Ejemplos')[0].classList.toggle('Ejemplo-active')
+
+    crearEjemplos(2, 2, elementos, Cabeceras);
+});
+
+/* ===== EJEMPLO PIEDRA PAPEL O TIJERA ===== */
+document.getElementById('piedraPapelTijera').addEventListener('click', () => {
+    let elementos = [];
+    for (let i = 0; i < 3; ++i) {
+        elementos[i] = [];
+    }
+    elementos[0][0] = new CElemento(0, 0);
+    elementos[0][1] = new CElemento(-1, 1);
+    elementos[0][2] = new CElemento(1, -1);
+    elementos[1][0] = new CElemento(1, -1);
+    elementos[1][1] = new CElemento(0, 0);
+    elementos[1][2] = new CElemento(-1, 1);
+    elementos[2][0] = new CElemento(-1, 1);
+    elementos[2][1] = new CElemento(1, -1);
+    elementos[2][2] = new CElemento(0, 0);
+
+    let Cabeceras = [];
+    for (let i = 0; i < 3; ++i) {
+        Cabeceras[i] = [];
+    }
+    Cabeceras[1][0] = 'Piedra';
+    Cabeceras[1][1] = 'Papel';
+    Cabeceras[1][2] = 'Tijera';
+    Cabeceras[0][0] = 'Piedra';
+    Cabeceras[0][1] = 'Papel';
+    Cabeceras[0][2] = 'Tijera';
+
+    document.getElementsByClassName('button-ejemplos')[0].classList.toggle('btn-ejemplos-active');
+    document.getElementsByClassName('modal-Ejemplos')[0].classList.toggle('Ejemplo-active')
+
+    crearEjemplos(3, 3, elementos, Cabeceras);
+});
+
+/* ===== EJEMPLO JUEGO DE LA GALLINA ===== */
+document.getElementById('juegoGallina').addEventListener('click', () => {
+    let elementos = [];
+    for (let i = 0; i < 2; ++i) {
+        elementos[i] = [];
+    }
+    elementos[0][0] = new CElemento(0, 0);
+    elementos[0][1] = new CElemento(-1, 1);
+    elementos[1][0] = new CElemento(1, -1);
+    elementos[1][1] = new CElemento(-20, -20);
+
+    let Cabeceras = [];
+    for (let i = 0; i < 2; ++i) {
+        Cabeceras[i] = [];
+    }
+    Cabeceras[1][0] = 'Cooperar';
+    Cabeceras[1][1] = 'No cooperar';
+    Cabeceras[0][0] = 'Cooperar';
+    Cabeceras[0][1] = 'No cooperar';
+
+    document.getElementsByClassName('button-ejemplos')[0].classList.toggle('btn-ejemplos-active');
+    document.getElementsByClassName('modal-Ejemplos')[0].classList.toggle('Ejemplo-active')
+
+    crearEjemplos(2, 2, elementos, Cabeceras);
+});
