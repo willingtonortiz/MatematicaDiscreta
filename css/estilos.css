@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Inconsolata');
 @import url('https://fonts.googleapis.com/css?family=Open+Sans|Oswald');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans|Montserrat:300');
+
 @import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans');
 * {
     margin: 0;
@@ -22,7 +24,6 @@ body {
 h1 {
     width: 100%;
     margin: 20px 0;
-    /* font-family: 'Inconsolata', monospace; */
     font-family: 'IBM Plex Mono', monospace;
     text-align: center;
     background: linear-gradient(#112, #349af5);
@@ -255,9 +256,9 @@ button:active {
     width: 60px;
     height: 60px;
     position: fixed;
-    top: 90%;
+    top: 95%;
     left: 95%;
-    transform: translate(-90%,-95%);
+    transform: translate(-95%,-95%);
     background: #fff;
     display: flex;
     text-align: center;
@@ -270,23 +271,34 @@ button:active {
     cursor: pointer;
     
 }   
+.modal-Ejemplos{
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(3,12,12,.95);
+    /* background: rgba(32, 32, 32, .9); */
+    z-index: -1;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
+}
 .btn-ejemplos-active{
-    background: #3f5;
+    background: #f44;
     color: white;
+    z-index: 100;
 }
 .button-ejemplos p{
     color: unset;
 }
 .Ejemplos{
-    position: fixed;
-    top: 15%;
-    left: 2%;
-    transform: translate(-2%,-15%);
+
+    width: auto;
     display: flex;
     flex-flow: column nowrap;
-    z-index: -1;
-    opacity: 0;
     transition: all .2s ease-in-out;
 
 }
@@ -295,55 +307,88 @@ button:active {
     opacity: 1;
 }    
 .Ejemplos .ejm img{
-    max-width: 30px;
+    max-width: 40px;
 }
 .ejm{
-    margin: 10px 0;
+    margin: 20px 0;
 }
 .ejm p{
-    margin-left: 10px;
+    font-family: 'Montserrat', sans-serif;
+
+    margin-left: 20px;
 }
 .dilema-prisionero{
-    width: 250px;
+    width: auto;
     position: relative;
     height: 50px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    background: #ff5757;
+    color: #ff5757;
     border-radius: 100px;
     padding: 15px;
     transition: all .2s ease-in-out;
     cursor: pointer;   
 }
+.dilema-prisionero p{
+    text-shadow: 0 0 20px #ff5757;
+    color: #ff5757;
+    letter-spacing: 2px;
+}
 .batalla-de-sexos{
-    width: 220px;
+    width: auto;
     position: relative;
     height: 50px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    background: #4373fe;
     border-radius: 100px;
     padding: 15px;
     transition: all .2s ease-in-out;
     cursor: pointer; 
+}
+.batalla-de-sexos p{
+    color: #4373fe;
+    text-shadow: 0 0 20px #4373fe;
+    letter-spacing: 2px;
+
 }
 .piedra-papel-tijera{
-    width: 250px;
+    width: auto;
     position: relative;
     height: 50px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    background: #ffee43;
     border-radius: 100px;
     padding: 15px;
     transition: all .2s ease-in-out;
     cursor: pointer; 
 }
+.piedra-papel-tijera p{
+    color: #ffee43;
+    text-shadow: 0 0 20px #ffee43;
+    letter-spacing: 2px;
 
+}
+.juego-gallina{
+    width: auto;
+    position: relative;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 100px;
+    padding: 15px;
+    transition: all .2s ease-in-out;
+    cursor: pointer; 
+}
+.juego-gallina p{
+    color: #3f7;
+    text-shadow: 0 0 20px #3f7;
+    letter-spacing: 2px;
 
+}
 /*==========  Non-Mobile First Method  ==========*/
 
 /* Large Devices, Wide Screens */
@@ -388,6 +433,19 @@ button:active {
         align-content: center;
         flex-flow: column wrap;
         margin: 0 auto;
+    }
+    .ejm{
+        margin: 10px 0;
+    }
+    .button-ejemplos{
+        width: 40px;
+        height: 40px;
+
+        padding: 13px 0;
+        
+        transition: all .1s ease-in-out;
+        cursor: pointer;
+        font-size: 14px;
     }
 }
 

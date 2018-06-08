@@ -604,6 +604,9 @@ document.getElementById('Generar').addEventListener('click', e => {
 });
 var buttonEvent = document.getElementsByClassName('button-ejemplos')[0] || document.getElementsByClassName('fa-bars')[0];
     buttonEvent.addEventListener('click',e=>{
+        
         e.target.classList.toggle('btn-ejemplos-active');
-        document.getElementsByClassName('Ejemplos')[0].classList.toggle('Ejemplo-active');
+        document.getElementsByClassName('modal-Ejemplos')[0].classList.toggle('Ejemplo-active');
+    
+
     })
