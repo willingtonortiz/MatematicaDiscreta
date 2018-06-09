@@ -185,6 +185,13 @@ function obtenerTabla(tabla) {
     return elementos;
 }
 
+// Función que remueve todos los hijos de un contenedor
+let removerTodosLosHijos = (contenedor) => {
+    while (contenedor.hasChildNodes()) {
+        contenedor.removeChild(contenedor.firstChild);
+    }
+}
+
 // FUNCIÓN PARA OBTENER LAS SOLUCIONES DE UN SISTEMA DE ECUACIONES
 function eliminacionDeGauss(matriz) {
     let filas = matriz.length;
@@ -330,13 +337,13 @@ function crearBotones(contenedorPrincipal) {
     contenedorPrincipal.appendChild(buttonContenedor);
 }
 
+// Función que sirve para crear un elemento de texto
 function crearContenedorTexto(tipo, texto, clase) {
     let contenedor = document.createElement(tipo);
     if (clase !== undefined) contenedor.setAttribute('class', clase);
     contenedor.innerText = texto;
     return contenedor;
 }
-
 
 // Función para modificar los nombres de las cabeceras
 let modificarCabeceras = (Cabeceras, filas, columnas) => {
@@ -352,9 +359,12 @@ let modificarCabeceras = (Cabeceras, filas, columnas) => {
 
 // Función para crear los ejemplos
 let crearEjemplos = (Filas, Columnas, Elementos, Cabeceras) => {
+    // Se quitan los estilos de la tabla anterior, en caso existieran
+    estilosInputs.quitarLosEstilos();
+    // Se quitan todos los hijos anteriores
+    removerTodosLosHijos(document.getElementById('principal'));
     // DECLARACIÓN Y DEFINICIÓN DE VARIABLES
     document.getElementById('soluciones').innerHTML = "";
-    document.getElementById('principal').innerHTML = "";
     let contenedorPrincipal = document.getElementById('principal');
     let filas = Filas;
     let columnas = Columnas;
@@ -376,7 +386,6 @@ let crearEjemplos = (Filas, Columnas, Elementos, Cabeceras) => {
 
     // LLENADO DE LOS INPUTS DE LA TABLA
     llenarTabla(elementos, filas, columnas);
-    estilosInputs.quitarLosEstilos();
 
     // LLAMADA AL EVENTO BOTÓN RANDOM
     document.querySelector('#btn-random').addEventListener('click', () => {
@@ -630,56 +639,47 @@ let botonMixtas = (table, filas, columnas) => {
 
 // CUERPO DEL PROGRAMA
 document.getElementById('Generar').addEventListener('click', e => {
+    removerTodosLosHijos(document.getElementById('principal'));
 
     // SI HABÍA CONTENIDO EN LAS SOLUCIONES, SE ELIMINA
     document.getElementById('soluciones').innerHTML = "";
 
-    if (TieneTabla) {
-        document.getElementById('miTabla').remove();
-        document.getElementById('btn-container').remove();
-        TieneTabla = false;
-    }
+    // DECLARACIÓN Y DEFINICIÓN DE VARIABLES
+    let contenedorPrincipal = document.getElementById('principal');
+    let filas = parseInt(document.getElementById('filas').value);
+    let columnas = parseInt(document.getElementById('columnas').value);
 
-    if (!TieneTabla) {
-        TieneTabla = true;
-        // DECLARACIÓN Y DEFINICIÓN DE VARIABLES
-        let contenedorPrincipal = document.getElementById('principal');
-        let filas = parseInt(document.getElementById('filas').value);
-        let columnas = parseInt(document.getElementById('columnas').value);
+    /* SE GENERAN LOS BOTONES */
+    crearBotones(contenedorPrincipal);
 
-        /* SE GENERAN LOS BOTONES */
-        crearBotones(contenedorPrincipal);
+    /* SE CREA LA TABLA CON LOS INPUTS */
+    let table = document.createElement('table');
+    table.setAttribute('id', 'miTabla');
+    crearTablaInputs(table, filas, columnas); // AGREGANDO INPUTS
+    contenedorPrincipal.appendChild(table);
+    table.addEventListener('keypress', (e) => {
+        estilosInputs.quitarLosEstilos();
+    }); // SI SE PRESIONA UN BOTÓN EN CUALQUIER INPUT, SE QUITAN LOS ESTILOS
 
-        /* SE CREA LA TABLA CON LOS INPUTS */
-        let table = document.createElement('table');
-        table.setAttribute('id', 'miTabla');
-        crearTablaInputs(table, filas, columnas); // AGREGANDO INPUTS
-        contenedorPrincipal.appendChild(table);
-        table.addEventListener('keypress', (e) => {
-            estilosInputs.quitarLosEstilos();
-        }); // SI SE PRESIONA UN BOTÓN EN CUALQUIER INPUT, SE QUITAN LOS ESTILOS
+    // LLAMADA AL EVENTO BOTÓN RANDOM
+    document.querySelector('#btn-random').addEventListener('click', () => {
+        botonRandom(filas, columnas, estilosInputs);
+    });
 
-        // LLAMADA AL EVENTO BOTÓN RANDOM
-        document.querySelector('#btn-random').addEventListener('click', () => {
-            botonRandom(filas, columnas, estilosInputs);
-        });
+    // LLAMADA AL EVENTO BOTÓN DOMINADAS
+    document.querySelector('#btn-Nash-dominadas').addEventListener('click', () => {
+        botonDominadas(table, filas, columnas)
+    });
 
-        // LLAMADA AL EVENTO BOTÓN DOMINADAS
-        document.querySelector('#btn-Nash-dominadas').addEventListener('click', () => {
-            botonDominadas(table, filas, columnas)
-        });
+    // LLAMADA AL EVENTO BOTÓN PURAS
+    document.querySelector('#btn-Nash-Pura').addEventListener('click', () => {
+        botonPuras(table, columnas, estilosInputs);
+    });
 
-        // LLAMADA AL EVENTO BOTÓN PURAS
-        document.querySelector('#btn-Nash-Pura').addEventListener('click', () => {
-            botonPuras(table, columnas, estilosInputs);
-        });
-
-        // LLAMADA AL EVENTO BOTÓN MIXTAS
-        document.querySelector('#btn-Nash-Mixta').addEventListener('click', () => {
-            botonMixtas(table, filas, columnas);
-        });
-
-    }
+    // LLAMADA AL EVENTO BOTÓN MIXTAS
+    document.querySelector('#btn-Nash-Mixta').addEventListener('click', () => {
+        botonMixtas(table, filas, columnas);
+    });
 });
 
 // Botón para el panel sobre la pantalla
