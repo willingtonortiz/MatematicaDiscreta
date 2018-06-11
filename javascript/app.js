@@ -725,7 +725,7 @@ let botonEvolutivas = (table, filas, columnas) => {
             solucion = solucion.slice(0, -2);
             solucion += '}';
             estrategiasEvolutivas.appendChild(crearContenedorTexto('h2', 'Estrategias Evolutivas'));
-            solucion = '"Equilibrio de Nash" en estrategias puras evolutivamente estable: ' + solucion;
+            solucion = '"Equilibrio de Nash" en estrategias evolutivas: ' + solucion;
             estrategiasEvolutivas.appendChild(crearContenedorTexto('p', solucion));
         } else {
             estrategiasEvolutivas.appendChild(crearContenedorTexto('h2', 'No hay solución en "Estrategias Evolutivas"'));
