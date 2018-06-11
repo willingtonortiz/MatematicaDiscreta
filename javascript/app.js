@@ -333,6 +333,11 @@ function crearBotones(contenedorPrincipal) {
     buttonMixta.setAttribute('id', 'btn-Nash-Mixta');
     buttonMixta.textContent = "Estrategia Mixta";
     buttonContenedor.appendChild(buttonMixta);
+    // BOTÓN EVOLUTIVAS
+    let buttonEvolutivas = document.createElement('button');
+    buttonEvolutivas.setAttribute('id', 'btn-Nash-Evolutiva');
+    buttonEvolutivas.textContent = "Estrategia Evolutiva";
+    buttonContenedor.appendChild(buttonEvolutivas);
     // SE AGREGA AL CONTENEDOR PRINCIPAL
     contenedorPrincipal.appendChild(buttonContenedor);
 }
@@ -405,6 +410,11 @@ let crearEjemplos = (Filas, Columnas, Elementos, Cabeceras) => {
     // LLAMADA AL EVENTO BOTÓN MIXTAS
     document.querySelector('#btn-Nash-Mixta').addEventListener('click', () => {
         botonMixtas(table, filas, columnas);
+    });
+
+    // LLAMADA AL EVENTO BOTÓN EVOLUTIVAS
+    document.querySelector('#btn-Nash-Ecolutiva').addEventListener('click', () => {
+        botonEvolutivas(table, filas, columnas);
     });
 }
 
@@ -637,6 +647,94 @@ let botonMixtas = (table, filas, columnas) => {
     estrategiasMixtas.appendChild(crearContenedorTexto('p', solucion));
 }
 
+/* ===== SOLUCIÓN EN ESTRATEGIAS EVOLUTIVAS ===== */
+let botonEvolutivas = (table, filas, columnas) => {
+    // DECLARACIÓN DE VARIABLES
+    let estrategiasEvolutivas = document.getElementById('soluciones');
+    estrategiasEvolutivas.innerHTML = "";
+    let elementos = obtenerTabla(table);
+
+    // Buscamos el mayor valor por filas de "B", es decir, el mayor "y" de cada fila
+    for (let i = 0; i < elementos.length; i++) {
+        let mayor = elementos[i][0].y;
+        for (let j = 0; j < elementos[i].length; j++) {
+            mayor = Math.max(mayor, elementos[i][j].y);
+        }
+        for (let j = 0; j < elementos[i].length; j++) {
+            if (mayor === elementos[i][j].y) {
+                elementos[i][j].rptaY = true;
+            }
+        }
+    }
+
+    // Buscamos el mayor valor por columnas de "A", es decir, el mayor "x" de cada columna
+    for (let j = 0; j < elementos[0].length; j++) {
+        let mayor = elementos[0][j].x;
+        for (let i = 0; i < elementos.length; i++) {
+            mayor = Math.max(mayor, elementos[i][j].x);
+        }
+        for (let i = 0; i < elementos.length; i++) {
+            if (mayor === elementos[i][j].x) {
+                elementos[i][j].rptaX = true;
+            }
+        }
+    }
+
+    let esPura = false;
+    for (let i = 0; i < elementos.length; i++) {
+        for (let j = 0; j < elementos[i].length; j++) {
+            // CONDICIÓN PARA QUE SEA UNA RESPUESTA
+            if (elementos[i][j].rptaX == true && elementos[i][j].rptaY == true) {
+                esPura = true;
+            }
+        }
+    }
+
+    if (esPura) {
+        // Variable que sirve para verificar si el equilibrio de nash es estable
+        let esEstable = true;
+        /*
+         * Un equilibrio de nash en puras es evolutivamente estable si se cumple lo siguiente:
+         * E(S,S) > E(T,S), or
+         * E(S,S) = E(T,S) and E(S,T) > E(T,T)
+         */
+        // NOMBRES DE LAS CABECERAS
+        let nombresDesiciones = document.getElementsByClassName('cabecera');
+        let solucion = '{';
+        for (let i = 0; i < filas; ++i) {
+            let T = i + 1;
+            esEstable = true;
+            if (T >= filas) T = 0;
+            while (T != i) {
+                if (elementos[i][i].x < elementos[T][i].x) {
+                    esEstable = false;
+                } else if (elementos[i][i].x == elementos[T][i].x && elementos[i][T].x < elementos[T][T].x) {
+                    esEstable = false;
+                }
+                ++T;
+                if (T >= filas) {
+                    T = 0;
+                }
+            }
+            if (esEstable) {
+                solucion += "(" + nombresDesiciones[i + columnas].value + ", " + nombresDesiciones[i].value + "), ";
+            }
+        }
+
+        if (solucion !== '{') {
+            solucion = solucion.slice(0, -2);
+            solucion += '}';
+            estrategiasEvolutivas.appendChild(crearContenedorTexto('h2', 'Estrategias Evolutivas'));
+            solucion = '"Equilibrio de Nash" en estrategias puras evolutivamente estable: ' + solucion;
+            estrategiasEvolutivas.appendChild(crearContenedorTexto('p', solucion));
+        } else {
+            estrategiasEvolutivas.appendChild(crearContenedorTexto('h2', 'No hay solución en "Estrategias Evolutivas"'));
+        }
+    } else {
+        estrategiasEvolutivas.appendChild(crearContenedorTexto('h2', 'No hay solución en "Estrategias Puras"'));
+    }
+}
+
 // CUERPO DEL PROGRAMA
 document.getElementById('Generar').addEventListener('click', e => {
     removerTodosLosHijos(document.getElementById('principal'));
@@ -679,6 +777,11 @@ document.getElementById('Generar').addEventListener('click', e => {
     // LLAMADA AL EVENTO BOTÓN MIXTAS
     document.querySelector('#btn-Nash-Mixta').addEventListener('click', () => {
         botonMixtas(table, filas, columnas);
+    });
+
+    // LLAMADA AL EVENTO BOTÓN MIXTAS
+    document.querySelector('#btn-Nash-Evolutiva').addEventListener('click', () => {
+        botonEvolutivas(table, filas, columnas);
     });
 });
 
