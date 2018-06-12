@@ -210,12 +210,14 @@ button:active {
     color: #2b2b2b;
 }
 
-#btn-Nash-dominadas,
-#btn-Nash-Evolutiva {
+#btn-Nash-dominadas{
     border: 1px solid #ff5533;
     color: #ff5533;
 }
-
+#btn-Nash-Evolutiva{
+    color: #7822e3;
+    border: 1px solid  #7822e3;
+}
 #btn-Nash-Pura {
     border: 1px solid #349af5;
     color: #349af5;
