@@ -737,6 +737,7 @@ let botonEvolutivas = (table, filas, columnas) => {
 
 // CUERPO DEL PROGRAMA
 document.getElementById('Generar').addEventListener('click', e => {
+    estilosInputs.quitarLosEstilos();
     removerTodosLosHijos(document.getElementById('principal'));
 
     // SI HABÍA CONTENIDO EN LAS SOLUCIONES, SE ELIMINA
